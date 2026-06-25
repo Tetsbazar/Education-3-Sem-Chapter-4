@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Bazar — Class 12 | Ch 4 | All Sets 1-14</title>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Syne',sans-serif;background:#f0faf4;min-height:100vh;color:#1c2e24}
+.top-bar{background:#1a7a4a;padding:0.8rem 1.5rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.top-logo{font-size:1.1rem;font-weight:800;color:white}.top-logo span{color:#f9a825}
+.timer-box{background:rgba(255,255,255,0.15);border-radius:8px;padding:0.4rem 1rem;display:flex;align-items:center;gap:6px;font-size:1rem;font-weight:700;color:white}
+.timer-box.danger{background:#dc3545}
+.main{max-width:820px;margin:0 auto;padding:1.5rem 1rem}
+.hub-header{text-align:center;margin-bottom:2rem}
+.hub-header h1{font-family:'Tiro Bangla',serif;font-size:2rem;color:#1c2e24}
+.hub-header p{font-family:'Tiro Bangla',serif;font-size:0.95rem;color:#5a7a66;margin-top:0.3rem}
+.set-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.2rem}
+.set-card{background:white;border-radius:14px;padding:1.5rem;border:1.5px solid #c5dccb;transition:all 0.2s;cursor:pointer;color:#1c2e24;box-shadow:0 2px 8px rgba(26,122,74,0.06)}
+.set-card:hover{transform:translateY(-3px);border-color:#1a7a4a;box-shadow:0 6px 20px rgba(26,122,74,0.12)}
+.set-card .icon{font-size:2.2rem;margin-bottom:0.3rem}
+.set-card .set-num{font-weight:700;font-size:1.1rem;color:#1a7a4a}
+.set-card .set-title{font-family:'Tiro Bangla',serif;font-size:0.85rem;color:#5a7a66;margin:0.2rem 0 0.5rem}
+.set-card .set-meta{display:flex;gap:1rem;font-size:0.7rem;color:#5a7a66}
+.set-card .set-meta span{background:#f0faf4;padding:0.15rem 0.6rem;border-radius:4px}
+.quiz-info{background:white;border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.2rem;border:1px solid #c5dccb;display:flex;gap:1rem;flex-wrap:wrap}
+.info-item{font-family:'Tiro Bangla',serif;font-size:0.85rem;color:#5a7a66}
+.info-item strong{color:#1a7a4a}
+.progress-wrap{background:#c5dccb;border-radius:4px;height:6px;margin-bottom:1.2rem;overflow:hidden}
+.progress-fill{height:100%;background:#1a7a4a;border-radius:4px;transition:width 0.3s}
+.q-card{background:white;border-radius:14px;padding:1.4rem;margin-bottom:1rem;border:1px solid #c5dccb;box-shadow:0 2px 10px rgba(26,122,74,0.06)}
+.q-num{font-size:0.75rem;font-weight:700;color:#e8730a;letter-spacing:1px;text-transform:uppercase;margin-bottom:0.6rem}
+.q-text{font-family:'Tiro Bangla',serif;font-size:1rem;color:#1c2e24;line-height:1.7;margin-bottom:1.1rem}
+.opts{display:flex;flex-direction:column;gap:0.6rem}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:0.7rem 1rem;border:1.5px solid #c5dccb;border-radius:10px;cursor:pointer;transition:all 0.15s;background:white;text-align:left;width:100%;font-family:inherit}
+.opt:hover:not(.disabled){border-color:#1a7a4a;background:#f0faf4}
+.opt-circle{min-width:28px;height:28px;border-radius:50%;border:1.5px solid #c5dccb;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#5a7a66;flex-shrink:0;transition:all 0.15s}
+.opt-text{font-family:'Tiro Bangla',serif;font-size:0.92rem;color:#1c2e24;line-height:1.6;padding-top:2px}
+.opt.correct{border-color:#1a7a4a;background:#e8f7ef}
+.opt.correct .opt-circle{background:#1a7a4a;border-color:#1a7a4a;color:white}
+.opt.wrong{border-color:#dc3545;background:#fdf0f0}
+.opt.wrong .opt-circle{background:#dc3545;border-color:#dc3545;color:white}
+.opt.disabled{cursor:default}
+.explanation{background:#f0faf4;border-left:3px solid #1a7a4a;border-radius:0 8px 8px 0;padding:0.8rem 1rem;margin-top:0.8rem;display:none}
+.explanation.show{display:block}
+.explanation p{font-family:'Tiro Bangla',serif;font-size:0.88rem;color:#2c4035;line-height:1.7}
+.explanation strong{color:#1a7a4a}
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:0.8rem}
+.score-show{font-family:'Tiro Bangla',serif;font-size:0.85rem;color:#5a7a66}
+.next-btn{background:#1a7a4a;color:white;border:none;padding:0.6rem 1.4rem;border-radius:8px;font-family:'Tiro Bangla',serif;font-size:0.9rem;cursor:pointer;transition:all 0.15s}
+.next-btn:hover{background:#2aad68}
+.next-btn:disabled{background:#c5dccb;cursor:default}
+.result-wrap{background:white;border-radius:14px;padding:2rem;text-align:center;border:1px solid #c5dccb;display:none}
+.result-wrap.show{display:block}
+.result-icon{font-size:3rem;margin-bottom:0.5rem}
+.result-score{font-size:3.5rem;font-weight:800;color:#1a7a4a}
+.result-total{font-size:1rem;color:#5a7a66;margin-bottom:0.5rem;font-family:'Tiro Bangla',serif}
+.result-grade{font-size:1.2rem;font-weight:600;color:#1c2e24;margin-bottom:1.5rem;font-family:'Tiro Bangla',serif}
+.result-bars{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.8rem;margin-bottom:1.5rem}
+.result-bar{background:#f0faf4;border-radius:10px;padding:0.8rem;text-align:center}
+.rb-num{font-size:1.4rem;font-weight:800}
+.rb-label{font-family:'Tiro Bangla',serif;font-size:0.8rem;color:#5a7a66;margin-top:0.2rem}
+.retry-btn{background:#1a7a4a;color:white;border:none;padding:0.75rem 2rem;border-radius:8px;font-family:'Tiro Bangla',serif;font-size:1rem;cursor:pointer;margin-right:0.5rem}
+.review-btn{background:white;color:#1a7a4a;border:1.5px solid #1a7a4a;padding:0.75rem 2rem;border-radius:8px;font-family:'Tiro Bangla',serif;font-size:1rem;cursor:pointer}
+.back-btn{background:white;color:#5a7a66;border:1.5px solid #c5dccb;padding:0.75rem 2rem;border-radius:8px;font-family:'Tiro Bangla',serif;font-size:1rem;cursor:pointer;margin-top:0.6rem}
+.start-wrap{background:white;border-radius:14px;padding:2rem;text-align:center;border:1px solid #c5dccb}
+.start-wrap h2{font-family:'Tiro Bangla',serif;font-size:1.4rem;color:#1c2e24;margin-bottom:0.5rem}
+.start-wrap p{font-family:'Tiro Bangla',serif;font-size:0.9rem;color:#5a7a66;line-height:1.7;margin-bottom:1.2rem}
+.start-info{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;margin-bottom:1.5rem}
+.si{background:#f0faf4;border-radius:10px;padding:0.8rem;text-align:center}
+.si-num{font-size:1.4rem;font-weight:800;color:#1a7a4a}
+.si-label{font-family:'Tiro Bangla',serif;font-size:0.8rem;color:#5a7a66}
+.start-btn{background:#1a7a4a;color:white;border:none;padding:0.85rem 2.5rem;border-radius:10px;font-family:'Tiro Bangla',serif;font-size:1.05rem;cursor:pointer;box-shadow:0 4px 15px rgba(26,122,74,0.3)}
+.start-btn:hover{background:#2aad68}
+.start-btn:disabled{background:#c5dccb;cursor:not-allowed;box-shadow:none}
+.login-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:999;display:none}
+.login-overlay.active{display:flex}
+.login-modal{background:white;border-radius:16px;padding:2.5rem;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.login-modal h2{font-family:'Tiro Bangla',serif;font-size:1.3rem;color:#1c2e24;text-align:center;margin-bottom:0.3rem}
+.login-modal p{font-family:'Tiro Bangla',serif;font-size:0.85rem;color:#5a7a66;text-align:center;margin-bottom:1.5rem}
+.login-modal label{font-size:0.8rem;font-weight:600;color:#1c2e24;display:block;margin-bottom:0.3rem}
+.login-modal input{width:100%;padding:0.7rem 1rem;border:1.5px solid #c5dccb;border-radius:8px;font-size:0.95rem;margin-bottom:1rem;font-family:'Tiro Bangla',serif}
+.login-modal input:focus{outline:none;border-color:#1a7a4a}
+.login-modal .login-btn{width:100%;background:#1a7a4a;color:white;border:none;padding:0.75rem;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Tiro Bangla',serif}
+.login-modal .login-btn:hover{background:#2aad68}
+.login-modal .login-btn:disabled{background:#c5dccb;cursor:not-allowed}
+.login-modal .error-msg{color:#dc3545;font-size:0.8rem;text-align:center;margin-top:0.5rem;font-family:'Tiro Bangla',serif;display:none}
+.login-modal .limit-info{background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:0.6rem 1rem;margin-bottom:1rem;font-family:'Tiro Bangla',serif;font-size:0.8rem;color:#856404;display:none}
+.login-modal .set-name-display{background:#f0faf4;border-radius:8px;padding:0.5rem;text-align:center;margin-bottom:1rem;font-family:'Tiro Bangla',serif;font-size:0.9rem;color:#1a7a4a;font-weight:600}
+.hidden{display:none !important}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-logo">Test <span>Bazar</span></div>
+  <div class="timer-box" id="timerBox">⏱ <span id="timerDisplay">10:00</span></div>
+</div>
+
+<div class="main">
+
+  <!-- ===== LOGIN OVERLAY ===== -->
+  <div class="login-overlay" id="loginOverlay">
+    <div class="login-modal">
+      <h2>🔐 লগইন করুন</h2>
+      <p>Test শুরু করতে আপনার ইউজারনেম ও পাসওয়ার্ড দিন</p>
+      <div class="set-name-display" id="loginSetName">📚 Set 1</div>
+      <div class="limit-info" id="limitInfo">⚠️ <span id="limitMsg"></span></div>
+      <label>ইউজারনেম</label>
+      <input type="text" id="loginUsername" placeholder="আপনার ইউজারনেম লিখুন">
+      <label>পাসওয়ার্ড</label>
+      <input type="password" id="loginPassword" placeholder="আপনার পাসওয়ার্ড লিখুন" onkeydown="if(event.key==='Enter') doLoginFromSet()">
+      <button class="login-btn" id="loginBtn" onclick="doLoginFromSet()">✅ লগইন করে Test শুরু করো</button>
+      <div class="error-msg" id="loginError">❌ ভুল ইউজারনেম বা পাসওয়ার্ড। আবার চেষ্টা করুন।</div>
+    </div>
+  </div>
+
+  <!-- ===== HUB PAGE ===== -->
+  <div id="hubPage">
+    <div class="hub-header">
+      <h1>📚 Chapter 4 — মহান শিক্ষাবিদ</h1>
+      <p>নিচের সেটগুলো থেকে বেছে নিন। Test শুরু করতে সেটে ক্লিক করুন এবং লগইন করুন।</p>
+      <div id="hubUserInfo" style="font-family:'Tiro Bangla',serif;font-size:0.85rem;color:#5a7a66;margin-top:0.5rem;"></div>
+    </div>
+    <div class="set-grid" id="setGrid"></div>
+  </div>
+
+  <!-- ===== TEST AREA ===== -->
+  <div id="testArea" class="hidden">
+    <div class="quiz-info">
+      <div class="info-item">🎓 <strong id="testSetName">শিক্ষাবিজ্ঞান</strong> — Class 12 | Ch 4 | <span id="testSetLabel">Set 1</span></div>
+      <div class="info-item">📝 <span id="testTopic">মহান শিক্ষাবিদ</span></div>
+    </div>
+    <div class="progress-wrap"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="q-card" id="qCard">
+      <div class="q-num" id="qNum">প্রশ্ন ১ / ১৫</div>
+      <div class="q-text" id="qText"></div>
+      <div class="opts" id="qOpts"></div>
+      <div class="explanation" id="explanation"><p id="explanationText"></p></div>
+      <div class="nav-row">
+        <div class="score-show" id="scoreShow">সঠিক: ০ | ভুল: ০</div>
+        <button class="next-btn" id="nextBtn" onclick="nextQ()" disabled>পরবর্তী →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== RESULT AREA ===== -->
+  <div class="result-wrap" id="resultWrap">
+    <div class="result-icon" id="resultIcon"></div>
+    <div class="result-score" id="finalScore"></div>
+    <div class="result-total">/ ১৫</div>
+    <div class="result-grade" id="resultGrade"></div>
+    <div class="result-bars">
+      <div class="result-bar"><div class="rb-num" id="rbCorrect" style="color:#1a7a4a"></div><div class="rb-label">সঠিক</div></div>
+      <div class="result-bar"><div class="rb-num" id="rbWrong" style="color:#dc3545"></div><div class="rb-label">ভুল</div></div>
+      <div class="result-bar"><div class="rb-num" id="rbPct" style="color:#e8730a"></div><div class="rb-label">স্কোর</div></div>
+    </div>
+    <div id="attemptInfo" style="font-family:'Tiro Bangla',serif;font-size:0.85rem;color:#5a7a66;margin-bottom:1rem;"></div>
+    <button class="retry-btn" onclick="startQuiz(currentSetId)">আবার চেষ্টা করো</button>
+    <button class="review-btn" onclick="showReview()">উত্তর দেখো</button>
+    <br>
+    <button class="back-btn" onclick="goToHub()">← Hub এ ফিরে যাও</button>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+//  ইউজার ডেটাবেস (Same as before)
+// ============================================================
+const MAX_ATTEMPTS = 10;
+const TOTAL_SETS = 14; // Updated to 14 sets
+
+const userData = [
+  {username:"alfa_romeo", password:"ARx7P29m", attempts:{}},
+  {username:"santos", password:"St8Qv41L", attempts:{}},
+  {username:"falcon", password:"Fc3MZ92k", attempts:{}},
+  {username:"titan", password:"Ti6Rp84W", attempts:{}},
+  {username:"matrix", password:"Mx5Kd73N", attempts:{}},
+  {username:"phoenix", password:"Ph9Js28V", attempts:{}},
+  {username:"cobra", password:"Cb4Ln65X", attempts:{}},
+  {username:"shadow", password:"Sh7Wp19Q", attempts:{}},
+  {username:"rocket", password:"Rc2Ty86M", attempts:{}},
+  {username:"warrior", password:"Wr8Az34K", attempts:{}},
+  {username:"eagle", password:"Eg5Xq72P", attempts:{}},
+  {username:"thunder", password:"Th1Vk93R", attempts:{}},
+  {username:"dragon", password:"Dr6Hm48N", attempts:{}},
+  {username:"panther", password:"Pa9Nc25J", attempts:{}},
+  {username:"viking", password:"Vi4Qs87L", attempts:{}},
+  {username:"hunter", password:"Hu7Bp31X", attempts:{}},
+  {username:"legend", password:"Le2Mz64T", attempts:{}},
+  {username:"ranger", password:"Ra8Kd95W", attempts:{}},
+  {username:"knight", password:"Kn3Xp57Q", attempts:{}},
+  {username:"turbo", password:"Tu6Lv21N", attempts:{}},
+  {username:"alpha", password:"Ap9Rm83K", attempts:{}},
+  {username:"bravo", password:"Br5Yt42M", attempts:{}},
+  {username:"charlie", password:"Ch7Wq16P", attempts:{}},
+  {username:"delta", password:"De4Nk78X", attempts:{}},
+  {username:"echo", password:"Ec8Jp35V", attempts:{}},
+  {username:"foxtrot", password:"Fx2Lm94Q", attempts:{}},
+  {username:"gamma", password:"Ga6Xs27T", attempts:{}},
+  {username:"helix", password:"He1Vp85N", attempts:{}},
+  {username:"inferno", password:"In9Qk43L", attempts:{}},
+  {username:"jaguar", password:"Ja5Mz72W", attempts:{}},
+  {username:"karma", password:"Ka8Rp14X", attempts:{}},
+  {username:"laser", password:"La3Tn67Q", attempts:{}},
+  {username:"meteor", password:"Me7Wx29P", attempts:{}},
+  {username:"nova", password:"No4Kz86M", attempts:{}},
+  {username:"omega", password:"Om2Lp53V", attempts:{}},
+  {username:"pegasus", password:"Pe9Xq71N", attempts:{}},
+  {username:"quantum", password:"Qu5Vr38K", attempts:{}},
+  {username:"rebel", password:"Re8Mz24T", attempts:{}},
+  {username:"storm", password:"St1Kp97W", attempts:{}},
+  {username:"tornado", password:"To6Nx45Q", attempts:{}},
+  {username:"ultra", password:"Ul3Wp82M", attempts:{}},
+  {username:"vector", password:"Ve7Lq19X", attempts:{}},
+  {username:"wolf", password:"Wo4Rm63P", attempts:{}},
+  {username:"xenon", password:"Xe9Tk25N", attempts:{}},
+  {username:"yodha", password:"Yo2Vz78K", attempts:{}},
+  {username:"zeus", password:"Ze8Mp41Q", attempts:{}},
+  {username:"atlas", password:"At5Lx93W", attempts:{}},
+  {username:"blaze", password:"Bl1Qn67M", attempts:{}},
+  {username:"cyclone", password:"Cy7Rp34T", attempts:{}},
+  {username:"dynamo", password:"Dy4Wk82X", attempts:{}},
+  {username:"apollo", password:"Ap7Kx94Lm", attempts:{}},
+  {username:"archer", password:"Ar3Vp62Qn", attempts:{}},
+  {username:"asteroid", password:"As8Tm15Rw", attempts:{}},
+  {username:"bandit", password:"Ba5Qz71Kp", attempts:{}},
+  {username:"bison", password:"Bi9Ln34Xt", attempts:{}},
+  {username:"bullet", password:"Bu2Wr86Mv", attempts:{}},
+  {username:"canyon", password:"Ca6Xp29Qk", attempts:{}},
+  {username:"captain", password:"Cp1Mz75Ln", attempts:{}},
+  {username:"comet", password:"Co8Tk43Wp", attempts:{}},
+  {username:"cyclonex", password:"Cy4Vr92Km", attempts:{}},
+  {username:"diesel", password:"Di7Lp18Qx", attempts:{}},
+  {username:"domino", password:"Do3Wn67Rt", attempts:{}},
+  {username:"duke", password:"Du9Kx25Mv", attempts:{}},
+  {username:"empire", password:"Em5Qp84Ln", attempts:{}},
+  {username:"explorer", password:"Ex2Vz39Kt", attempts:{}},
+  {username:"fighter", password:"Fi8Lm71Qw", attempts:{}},
+  {username:"galaxy", password:"Ga4Tk26Xp", attempts:{}},
+  {username:"gladiator", password:"Gl7Wp95Mn", attempts:{}},
+  {username:"gravity", password:"Gr1Nx53Lq", attempts:{}},
+  {username:"hawk", password:"Ha9Kz42Rt", attempts:{}},
+  {username:"horizon", password:"Ho5Vm87Xp", attempts:{}},
+  {username:"icefire", password:"Ic3Lp16Qn", attempts:{}},
+  {username:"impact", password:"Im8Wr74Kt", attempts:{}},
+  {username:"ironman", password:"Ir2Xq95Mv", attempts:{}},
+  {username:"jetstar", password:"Je6Nk38Lp", attempts:{}},
+  {username:"kingston", password:"Ki1Vp72Qw", attempts:{}},
+  {username:"lightning", password:"Li9Tm45Rx", attempts:{}},
+  {username:"majestic", password:"Ma4Kp83Ln", attempts:{}},
+  {username:"monster", password:"Mo7Wz21Qt", attempts:{}},
+  {username:"neptune", password:"Ne3Lx96Mv", attempts:{}},
+  {username:"ninja", password:"Ni8Qr54Kp", attempts:{}},
+  {username:"orbit", password:"Or2Vp73Ln", attempts:{}},
+  {username:"patriot", password:"Pa6Tk18Qw", attempts:{}},
+  {username:"pioneer", password:"Pi1Xm85Rt", attempts:{}},
+  {username:"predator", password:"Pr9Lq47Kv", attempts:{}},
+  {username:"proton", password:"Pt4Wn62Mx", attempts:{}},
+  {username:"rapid", password:"Ra7Kx93Lp", attempts:{}},
+  {username:"samurai", password:"Sa3Vp25Qn", attempts:{}},
+  {username:"sniper", password:"Sn8Tm71Rw", attempts:{}},
+  {username:"solaris", password:"So2Qk84Mv", attempts:{}},
+  {username:"spartan", password:"Sp6Ln39Xt", attempts:{}},
+  {username:"striker", password:"St1Wr57Kp", attempts:{}},
+  {username:"summit", password:"Su9Xp26Lm", attempts:{}},
+  {username:"taurus", password:"Ta5Vz91Qw", attempts:{}},
+  {username:"tempest", password:"Te3Kp48Rt", attempts:{}},
+  {username:"trident", password:"Tr8Wm72Ln", attempts:{}},
+  {username:"valiant", password:"Va2Nx35Qk", attempts:{}},
+  {username:"voyager", password:"Vo6Lp97Mx", attempts:{}},
+  {username:"wildfire", password:"Wi1Tk64Rv", attempts:{}},
+  {username:"zenith", password:"Ze9Qx28Lp", attempts:{}}
+];
+
+// ============================================================
+//  সব সেটের ডেটা (Set 1-14 for Chapter 4)
+// ============================================================
+const allSets = {
+  1: {
+    name: 'Set 1',
+    icon: '🕊️',
+    topic: 'রবীন্দ্রনাথ ঠাকুরের শিক্ষাচিন্তা',
+    questions: [
+      {q: 'মাতৃভাষাকে মাতৃদুগ্ধের সঙ্গে তুলনা করেছিলেন?', opts: ['রামমোহন রায়', 'বিবেকানন্দ', 'বিদ্যাসাগর', 'রবীন্দ্রনাথ'], ans: 3, exp: 'রবীন্দ্রনাথ মাতৃভাষাকে মাতৃদুগ্ধের সঙ্গে তুলনা করেছেন এবং শিক্ষার্থীদের মাতৃভাষার মাধ্যমে স্বতঃস্ফূর্তভাবে শিক্ষাদানের কথা বলেছেন।'},
+      {q: '‘সৌন্দর্যের সন্ন্যাসী’ বলা হয়—', opts: ['বিবেকানন্দকে', 'রবীন্দ্রনাথকে', 'রামমোহনকে', 'বিদ্যাসাগরকে'], ans: 1, exp: 'রবীন্দ্রনাথ ঠাকুর ছিলেন পরম প্রকৃতিপ্রেমিক এবং সত্য, শিব ও সুন্দরের পূজারি। তাই তাঁকে \'সৌন্দর্যের সন্ন্যাসী\' বলে আখ্যায়িত করা হয়।'},
+      {q: '“গুরুর অন্তরে ছেলেমানুষটি যদি একেবারে শুকিয়ে কাঠ হয়ে যায়...” উক্তিটি কার?', opts: ['বিদ্যাসাগরের', 'বিবেকানন্দের', 'রবীন্দ্রনাথের', 'গান্ধিজির'], ans: 2, exp: 'রবীন্দ্রনাথ ঠাকুর তাঁর ‘আশ্রমরূপ ও বিকাশ’ প্রবন্ধে আদর্শ শিক্ষক বা গুরু সম্পর্কে আলোচনা করতে গিয়ে এই উক্তিটি করেছেন।'},
+      {q: '“যদি তুমি ভগবানকে জানতে চাও, তবে বিবেকানন্দকে জানো”—উক্তিটি কার?', opts: ['বিবেকানন্দের', 'রবীন্দ্রনাথের', 'বিদ্যাসাগরের', 'গান্ধিজির'], ans: 1, exp: 'কবিগুরু রবীন্দ্রনাথ ঠাকুর স্বামীজির প্রতি গভীর শ্রদ্ধা জানিয়ে বলেছিলেন যে, ভারতবর্ষকে জানতে হলে বিবেকানন্দকে পড়তে হবে।'},
+      {q: 'শান্তিনিকেতন প্রতিষ্ঠা করেছিলেন—', opts: ['বিদ্যাসাগর', 'রবীন্দ্রনাথ', 'বিবেকানন্দ', 'গান্ধিজি'], ans: 1, exp: 'প্রকৃতির সাহচর্যে তরুণ চিত্তে আনন্দ সঞ্চারের উদ্দেশ্যে রবীন্দ্রনাথ ১৯০১ খ্রিস্টাব্দে শান্তিনিকেতনে আশ্রমিক বিদ্যালয় প্রতিষ্ঠা করেছিলেন।'},
+      {q: 'আশ্রম বিদ্যালয় প্রতিষ্ঠা করেছিলেন—', opts: ['বিদ্যাসাগর', 'রবীন্দ্রনাথ', 'বিবেকানন্দ', 'গান্ধিজি'], ans: 1, exp: '১৯০১ খ্রিস্টাব্দে রবীন্দ্রনাথ ঠাকুর বোলপুরের শান্তিনিকেতনে প্রাচীন ভারতের গুরুগৃহের আদলে এই আশ্রমিক বিদ্যালয় স্থাপন করেন।'},
+      {q: 'রবীন্দ্রনাথের মতে সৃষ্টির মূল কথা হল—', opts: ['স্বয়ং শিক্ষা', 'সৌন্দর্য', 'সমাজ', 'পরিবার'], ans: 1, exp: 'রবীন্দ্রনাথ ছিলেন মূলত সৌন্দর্য, সত্য এবং শিবের পূজারি। তাই তাঁর মতে প্রকৃতির অপরূপ সৌন্দর্যই হলো সৃষ্টির মূল কথা।'},
+      {q: 'শান্তিনিকেতনে ব্রহ্মচর্যশ্রম প্রতিষ্ঠা করেন—', opts: ['বিবেকানন্দ', 'রাজা রামমোহন রায়', 'বিদ্যাসাগর', 'রবীন্দ্রনাথ ঠাকুর'], ans: 3, exp: 'রবীন্দ্রনাথ ঠাকুর শিক্ষার্থীদের শৃঙ্খলিত ও আদর্শ মানুষ করে গড়ে তুলতে শান্তিনিকেতনে ব্রহ্মচর্যশ্রম প্রতিষ্ঠা করেছিলেন।'},
+      {q: 'রবীন্দ্রনাথের শিক্ষা পদ্ধতি ছিল—', opts: ['মনোবৈজ্ঞানিক', 'বিজ্ঞানসম্মত', 'শিশুর জীবনভিত্তিক', 'সব ক-টি'], ans: 3, exp: 'রবীন্দ্রনাথের শিক্ষাপদ্ধতি আবিষ্কারক, অভিজ্ঞতাকেন্দ্রিক, কর্মকেন্দ্রিক অর্থাৎ এটি মনোবৈজ্ঞানিক, বিজ্ঞানসম্মত এবং সম্পূর্ণ জীবনভিত্তিক।'},
+      {q: 'দার্শনিক রূপে রবীন্দ্রনাথ ছিলেন—', opts: ['ভাববাদী', 'প্রয়োগবাদী', 'প্রকৃতিবাদী', 'সব ক-টি'], ans: 3, exp: 'রবীন্দ্রনাথ ঠাকুরের জীবনদর্শনে প্রকৃতিবাদ, ভাববাদ, বাস্তববাদ ও মানবতাবাদের এক অপূর্ব সমন্বয় লক্ষ্য করা যায়।'},
+      {q: 'রবীন্দ্রনাথ ব্রহ্মচর্যশ্রম স্থাপন করেন—', opts: ['বেদের আদর্শে', 'উপনিষদের আদর্শে', 'বাস্তববাদের আদর্শে', 'কোনোটিই নয়'], ans: 1, exp: 'প্রাচীন ভারতীয় সনাতন ধর্ম এবং উপনিষদের আদর্শের ওপর ভিত্তি করেই তিনি এই আশ্রমিক বিদ্যালয় স্থাপন করেছিলেন।'},
+      {q: 'বোলপুর ব্রহ্মচর্যশ্রম প্রতিষ্ঠিত হয়—', opts: ['1007 বঙ্গাব্দে', '1308 বঙ্গাব্দে', '1309 বঙ্গাব্দে', '1310 বঙ্গাব্দে'], ans: 1, exp: '১৯০১ খ্রিস্টাব্দ অর্থাৎ বাংলা ১৩০৮ বঙ্গাব্দে শান্তিনিকেতনে এই ব্রহ্মচর্যশ্রম প্রতিষ্ঠিত হয়।'},
+      {q: 'রবীন্দ্রনাথের শিক্ষাদর্শনের গুরুত্বপূর্ণ দিক হল—', opts: ['শিক্ষায় আনন্দ', 'শিক্ষায় স্বাধীনতা', 'সৃজনশীলতা', 'সব ক-টি'], ans: 3, exp: 'তিনি শিক্ষার ক্ষেত্রে অবাধ স্বাধীনতা, সৃজনাত্মক আত্মপ্রকাশের সুযোগ এবং প্রকৃতির সঙ্গে সক্রিয় সংযোগ অর্থাৎ আনন্দের কথা বলেছেন।'},
+      {q: '‘শিক্ষার হেরফের’ গ্রন্থটির রচয়িতা হলেন—', opts: ['রামমোহন', 'রবীন্দ্রনাথ', 'বিদ্যাসাগর', 'কেউই নয়'], ans: 1, exp: '\'শিক্ষার হেরফের\' (১২৯৯ বঙ্গাব্দ) বিশ্বকবি রবীন্দ্রনাথ ঠাকুরের শিক্ষা বিষয়ক একটি অত্যন্ত বিখ্যাত রচনা।'},
+      {q: 'শ্রীনিকেতন যাঁর বাস্তব শিক্ষাচিন্তার মূর্ত প্রতীক, তিনি হলেন—', opts: ['বিদ্যাসাগর', 'গান্ধিজি', 'রবীন্দ্রনাথ', 'বিবেকানন্দ'], ans: 2, exp: 'পল্লি উন্নয়নমূলক কর্মসূচি এবং ব্যবহারিক শিক্ষার প্রসারের জন্য রবীন্দ্রনাথ ১৯২২ খ্রিস্টাব্দে শ্রীনিকেতন প্রতিষ্ঠা করেন।'}
+    ]
+  },
+  2: {
+    name: 'Set 2',
+    icon: '📖',
+    topic: 'রবীন্দ্রনাথ ঠাকুরের শিক্ষা ও রচনাবলি',
+    questions: [
+      {q: 'শ্রীনিকেতনে শিল্প শিক্ষণ প্রতিষ্ঠা করেন—', opts: ['রবীন্দ্রনাথ', 'রামমোহন', 'বিবেকানন্দ', 'কেউই নয়'], ans: 0, exp: 'গ্রামীণ মানুষের কৃষিকাজ, কাঠের কাজ, তাঁত বোনা ইত্যাদি বৃত্তিমুখী শিল্প শিক্ষার জন্য রবীন্দ্রনাথ এটি প্রতিষ্ঠা করেন।'},
+      {q: '‘শিক্ষার বাহন’ গ্রন্থের রচয়িতা হলেন—', opts: ['রামমোহন', 'বিদ্যাসাগর', 'ডিউই', 'রবীন্দ্রনাথ'], ans: 3, exp: '১৩২২ বঙ্গাব্দে প্রকাশিত \'শিক্ষার বাহন\' রবীন্দ্রনাথ ঠাকুরের লেখা একটি উল্লেখযোগ্য শিক্ষা বিষয়ক রচনা, যেখানে গণশিক্ষার কথা বলা হয়েছে।'},
+      {q: 'রবীন্দ্রনাথের মতে শিক্ষার মাধ্যম হওয়া উচিত—', opts: ['মাতৃভাষা', 'ইংরেজি ভাষা', 'আরবি ভাষা', 'সব ক-টিই'], ans: 0, exp: 'রবীন্দ্রনাথ মাতৃভাষাকে মাতৃদুগ্ধের সঙ্গে তুলনা করে সব ধরনের শিক্ষার মাধ্যম হিসেবে মাতৃভাষার ওপর সবচেয়ে বেশি জোর দিয়েছেন।'},
+      {q: 'রবীন্দ্রনাথ ঠাকুর কত খ্রিস্টাব্দে ‘স্যার উপাধি’ লাভ করেন?', opts: ['1913', '1915', '1924', '1935'], ans: 1, exp: 'ব্রিটিশ ইংরেজ সরকার ১৯১৫ খ্রিস্টাব্দে কবিগুরু রবীন্দ্রনাথকে ‘স্যার’ বা ‘নাইট’ উপাধি প্রদান করেছিল।'},
+      {q: 'রবীন্দ্রনাথ ঠাকুর কত খ্রিস্টাব্দে ‘কবি সার্বভৌম’ উপাধি লাভ করেন?', opts: ['1915 খ্রিস্টাব্দের 30 মে', '1915 খ্রিস্টাব্দে', '1931 খ্রিস্টাব্দের 20 সেপ্টেম্বর', '1913 খ্রিস্টাব্দে'], ans: 2, exp: '১৯৩১ খ্রিস্টাব্দের ২০ সেপ্টেম্বর সংস্কৃত কলেজ তাঁকে সম্মানের সাথে ‘কবি সার্বভৌম’ উপাধি প্রদান করে।'},
+      {q: '1939 খ্রিস্টাব্দের 19 এপ্রিল কোথাকার রাজা রবীন্দ্রনাথ ঠাকুরকে ‘পরমগুরু’ উপাধি প্রদান করেন?', opts: ['ত্রিপুরার রাজা', 'পুরীর রাজা', 'ময়নার রাজা', 'মহিষাদলের রাজা'], ans: 1, exp: '১৯৩৯ সালের ১৯ এপ্রিল পুরীর রাজা তাঁকে \'পরমগুরু\' উপাধিতে ভূষিত করেছিলেন।'},
+      {q: 'কোথাকার রাজা রবীন্দ্রনাথ ঠাকুরকে ‘ভারত ভাস্কর’ উপাধি প্রদান করেন?', opts: ['ত্রিপুরার রাজা', 'পুরীর রাজা', 'উত্তরপ্রদেশের রাজা', 'ময়নার রাজা'], ans: 0, exp: '১৯৪১ খ্রিস্টাব্দের ১৩ মে ত্রিপুরার রাজা তাঁকে বিশেষ সম্মান হিসেবে ‘ভারত ভাস্কর’ উপাধি দেন।'},
+      {q: 'রবীন্দ্রনাথের লেখা গ্রন্থ ‘ছাত্রের প্রতি সম্ভাষণ’ কত বঙ্গাব্দে প্রকাশিত হয়?', opts: ['1299', '1313', '1312', '1322'], ans: 2, exp: 'শিক্ষার্থীদের উদ্দ্যেশে লেখা রবীন্দ্রনাথের শিক্ষামূলক রচনা \'ছাত্রদের প্রতি সম্ভাষণ\' ১৩১২ বঙ্গাব্দে প্রকাশিত হয়েছিল।'},
+      {q: '‘শিক্ষার বিকিরণ’ কত খ্রিস্টাব্দে প্রকাশিত হয়?', opts: ['1933', '1922', '1918', '1342'], ans: 0, exp: '\'শিক্ষার বিকিরণ\' গ্রন্থটি ১৩৪০ বঙ্গাব্দ অর্থাৎ ১৯৩৩ খ্রিস্টাব্দে প্রকাশিত হয়।'},
+      {q: 'রবীন্দ্রনাথের মতে, পাঠ্যক্রম হবে—', opts: ['ব্যক্তিকেন্দ্রিক', 'সমাজকেন্দ্রিক', 'চরিত্রগঠনমূলক', 'সংস্কৃতির ধারক ও বাহক'], ans: 3, exp: 'তিনি মনে করতেন পাঠ্যক্রম হবে সংস্কৃতির ধারক ও বাহক, যেখানে সাহিত্য, বিজ্ঞান, শিল্পকলা ইত্যাদির মেলবন্ধন থাকবে।'},
+      {q: '“অত্যাবশ্যক পাঠের সহিত স্বাধীন পাঠ না মিশাইলে ছেলে ভালো করিয়া মানুষ হইতে পারে না”—উক্তিটি কোন্ শিক্ষাবিদের?', opts: ['বিবেকানন্দের', 'গান্ধিজির', 'জন ডিউইর', 'রবীন্দ্রনাথের'], ans: 3, exp: 'রবীন্দ্রনাথ তাঁর ‘শিক্ষার হেরফের’ রচনায় পুঁথিগত পাঠের বাইরে স্বাধীন পাঠের গুরুত্ব বোঝাতে এই কথা বলেছেন।'},
+      {q: '“মানুষ মানুষের কাছ থেকে শিখতে পারে...” এই উক্তিটি রবীন্দ্রনাথ কোন্ প্রবন্ধে করেছেন?', opts: ['শিক্ষার হেরফের', 'শিক্ষাধারা', 'শিক্ষা ও সংস্কৃতি', 'শিক্ষার সংস্কার'], ans: 1, exp: 'আদর্শ শিক্ষক ও শিক্ষার মাধ্যম সম্পর্কে রবীন্দ্রনাথ তাঁর ‘শিক্ষাধারা’ প্রবন্ধে এই চমৎকার কথাগুলি লিখেছেন।'},
+      {q: '“গুরুর অন্তরে ছেলেমানুষটি যদি একেবারে শুকিয়ে কাঠ হয়ে যায়...” উক্তিটি রবীন্দ্রনাথ কোন্ গ্রন্থে করেছেন?', opts: ['শিক্ষাধারা', 'শিক্ষার হেরফের', 'আশ্রমরূপ ও বিকাশ', 'শিক্ষাসমস্যা'], ans: 2, exp: 'রবীন্দ্রনাথ তাঁর \'আশ্রমরূপ ও বিকাশ\' প্রবন্ধে শিক্ষক প্রসঙ্গে এটি উল্লেখ করেছেন, অর্থাৎ শিক্ষকের ভেতর শিশুর সারল্য থাকতে হবে।'},
+      {q: '“ঈশ্বরের জন্য আবেগপূর্ণ আকুলতা...” উক্তিটি কোন্ শিক্ষাবিদের?', opts: ['বিবেকানন্দের', 'গান্ধিজির', 'জন ডিউইর', 'রবীন্দ্রনাথের'], ans: 3, exp: 'কবিগুরু রবীন্দ্রনাথ ঠাকুর ধর্মশিক্ষা প্রসঙ্গে ধর্মের এই সুন্দর সংজ্ঞাটি প্রদান করেছেন।'},
+      {q: 'রবীন্দ্রনাথের মতে, ধর্ম শিক্ষার আদর্শ পরিবেশ নীচের কোনটি?', opts: ['প্রাকৃতিক পরিবেশ', 'পারিবারিক পরিবেশ', 'আশ্রম পরিবেশ', 'বিদ্যালয় পরিবেশ'], ans: 2, exp: 'আশ্রমিক পরিবেশেই শিশুর অন্তরের ধর্মশিক্ষার প্রকৃত বিকাশ সম্ভব বলে তিনি মনে করতেন।'}
+    ]
+  },
+  3: {
+    name: 'Set 3',
+    icon: '🏛️',
+    topic: 'বিশ্বভারতী ও রবীন্দ্রনাথের শিক্ষাদর্শন',
+    questions: [
+      {q: 'রবীন্দ্রনাথ ঠাকুর ‘গণশিক্ষার প্রসার’-এর বিষয়ে কোন্ দুটি রচনায় আলোকপাত করেছেন?', opts: ['শিক্ষাধারা ও শিক্ষার বাহন', 'শিক্ষার বিকিরণ ও শিক্ষাধারা', 'শিক্ষার বিকিরণ ও শিক্ষার বাহন', 'শিক্ষার সমস্যা ও শিক্ষার বাহন'], ans: 2, exp: 'গণশিক্ষার প্রসারের জন্য তাঁর লেখা ‘শিক্ষার বিকিরণ’ ও ‘শিক্ষার বাহন’ প্রবন্ধ দুটিতে বিশেষভাবে আলোকপাত করা হয়েছে।'},
+      {q: 'রবীন্দ্রনাথ ঠাকুর গণশিক্ষার প্রসারের জন্য নীচের কোন্ বিষয়টির ওপর গুরুত্ব দিয়েছেন?', opts: ['যাত্রা', 'লোকসংগীত', 'লোকনৃত্য', 'সব ক-টি'], ans: 3, exp: 'সাধারণ মানুষের কাছে শিক্ষাকে পৌঁছে দিতে তিনি যাত্রা, লোকসংগীত, লোকনৃত্য প্রভৃতি সাংস্কৃতিক মাধ্যমকে বিশেষ গুরুত্ব দিয়েছেন।'},
+      {q: '“Only man can teach another man.”—এটি কে বলেছেন?', opts: ['গান্ধিজি', 'রবীন্দ্রনাথ', 'বিবেকানন্দ', 'রুশো'], ans: 1, exp: 'শিক্ষক-শিক্ষার্থীর গভীর সম্পর্ক বোঝাতে রবীন্দ্রনাথ বলেছেন যে কেবল একজন মানুষই পারে আরেকজন মানুষের মধ্যে প্রাণের সঞ্চার করতে।'},
+      {q: 'রবীন্দ্রনাথের শিক্ষাচিন্তার সর্বশ্রেষ্ঠ অবদান কী?', opts: ['আশ্রম বিদ্যালয়', 'শিল্পসত্র', 'বিশ্বভারতী বিশ্ববিদ্যালয়', 'গণশিক্ষার প্রসার'], ans: 2, exp: 'রবীন্দ্রনাথের শিক্ষাচিন্তার সর্বশ্রেষ্ঠ বাস্তব রূপ বা অবদান হল বিশ্বভারতী বিশ্ববিদ্যালয় প্রতিষ্ঠা।'},
+      {q: 'রবীন্দ্রনাথ ঠাকুর কত খ্রিস্টাব্দে বিশ্বভারতী প্রতিষ্ঠা করেন?', opts: ['1922', '1921', '1924', '1913'], ans: 1, exp: '১৯২১ খ্রিস্টাব্দে তিনি বিশ্বভারতী প্রতিষ্ঠা করেন, যেখানে প্রাচ্য ও পাশ্চাত্যের শিক্ষার মেলবন্ধন ঘটানো হয়েছিল।'},
+      {q: '“বিজ্ঞানের কল্যাণে আজ ভূগোলের বেড়া ভেঙে গিয়েছে...” উক্তিটি রবীন্দ্রনাথ কোন্ প্রবন্ধে করেছেন?', opts: ['শিক্ষার বাহন', 'শিক্ষার হেরফের', 'শিক্ষার মিলন', 'শিক্ষার সমস্যা'], ans: 2, exp: 'প্রাচ্য ও পাশ্চাত্যের শিক্ষার মিলনের প্রয়োজনীয়তা বোঝাতে \'শিক্ষার মিলন\' প্রবন্ধে তিনি এটি বলেছেন।'},
+      {q: '‘পাঠভবন’-এ কোন্ ধরনের শিক্ষাদান করা হয়?', opts: ['উচ্চমাধ্যমিক শিক্ষা', 'মাধ্যমিক শিক্ষা', 'শিক্ষক শিক্ষণ', 'শিল্প ও চারুকলা'], ans: 1, exp: 'বিশ্বভারতী বিশ্ববিদ্যালয়ের অন্তর্ভুক্ত ‘পাঠভবন’-এ মাধ্যমিক বিদ্যালয় স্তরের শিক্ষাদান করা হয়।'},
+      {q: 'বিশ্বভারতীতে ‘শিক্ষক-শিক্ষণ মহাবিদ্যালয়’ ভবনের নাম কী?', opts: ['কলাভবন', 'শিক্ষাভবন', 'বিদ্যাভবন', 'বিনয়ভবন'], ans: 3, exp: 'বিশ্বভারতী বিশ্ববিদ্যালয়ের অন্তর্ভুক্ত \'বিনয়ভবন\' হল শিক্ষক-শিক্ষণ মহাবিদ্যালয় বা Teacher\'s Training College।'},
+      {q: 'বিশ্বভারতীতে ‘শিল্প ও চারুকলা মহাবিদ্যালয়’ ভবনের নাম কী?', opts: ['কলাভবন', 'সংগীত ভবন', 'শ্রীনিকেতন', 'বিদ্যাভবন'], ans: 0, exp: 'বিশ্বভারতী বিশ্ববিদ্যালয়ের অন্তর্ভুক্ত \'কলাভবন\'-এ শিল্প ও চারুকলার শিক্ষা দেওয়া হয়।'},
+      {q: 'বিশ্বভারতীতে ‘স্নাতক ও স্নাতকোত্তর মহাবিদ্যালয়’ ভবনের নাম কী?', opts: ['পাঠভবন', 'বিনয়ভবন', 'শিক্ষাভবন', 'বিদ্যাভবন'], ans: 3, exp: 'পাঠ্যপুস্তকের ছক অনুযায়ী স্নাতক ও স্নাতকোত্তর মহাবিদ্যালয়টি হলো ‘বিদ্যাভবন’।'},
+      {q: 'কত খ্রিস্টাব্দে বিশ্বভারতী বিশ্ববিদ্যালয় কেন্দ্রীয় বিশ্ববিদ্যালয়ের মর্যাদা লাভ করে?', opts: ['1921', '1922', '1951', '1942'], ans: 2, exp: 'রবীন্দ্রনাথের মৃত্যুর পর ১৯৫১ খ্রিস্টাব্দে বিশ্বভারতী একটি কেন্দ্রীয় বিশ্ববিদ্যালয় বা Central University-র মর্যাদা লাভ করে।'},
+      {q: 'আন্নাকালী পাকড়াশী ছদ্মনামে কে লিখেছেন?', opts: ['গান্ধিজি', 'বিবেকানন্দ', 'রবীন্দ্রনাথ', 'ডিউই'], ans: 2, exp: 'রবীন্দ্রনাথ ঠাকুর সাহিত্য রচনার সময় \'ভানুসিংহ\' এবং \'আন্নাকালী পাকড়াশী\' ছদ্মনাম ব্যবহার করতেন।'},
+      {q: '1924 খ্রিস্টাব্দের 8 মে চিনের প্যাকেং রবীন্দ্রনাথকে কী উপাধিতে ভূষিত করেন?', opts: ['চে-চেন-খান', 'চ-চান-তান', 'চে-চেন-তান', 'চাউ-চিউ'], ans: 2, exp: 'চিনের পিকিং-এ তাঁকে সম্মানের সাথে \'চে-চেন-তান\' (বজ্রপ্রভাত) উপাধিতে ভূষিত করা হয়।'},
+      {q: 'রবীন্দ্রনাথ কী কারণে ‘Knight’ উপাধি ত্যাগ করেন?', opts: ['বঙ্গভঙ্গের জন্য', 'জালিয়ানওয়ালাবাগের হত্যাকাণ্ডের প্রতিবাদে', 'নোবেল পুরস্কারের জন্য', 'দেশের স্বাধীনতার জন্য'], ans: 1, exp: '১৯১৯ সালে জালিয়ানওয়ালাবাগের নৃশংস হত্যাকাণ্ডের প্রতিবাদস্বরূপ তিনি ইংরেজদের দেওয়া \'নাইট\' উপাধি ত্যাগ করেন।'},
+      {q: '‘শিক্ষার বাহন’ প্রবন্ধ কত বঙ্গাব্দে প্রকাশিত হয়?', opts: ['1322', '1312', '1319', '1328'], ans: 0, exp: '\'শিক্ষার বাহন\' রবীন্দ্রনাথ ঠাকুরের লেখা একটি উল্লেখযোগ্য প্রবন্ধ, যা ১৩২২ বঙ্গাব্দে প্রকাশিত হয়।'}
+    ]
+  },
+  4: {
+    name: 'Set 4',
+    icon: '🕉️',
+    topic: 'বিশ্বভারতী ও স্বামী বিবেকানন্দের শিক্ষাদর্শন',
+    questions: [
+      {q: 'শিক্ষাভবনে কোন্ ধরনের শিক্ষা প্রদান করা হয়?', opts: ['নার্সারি শিক্ষা', 'মাধ্যমিক শিক্ষা', 'উচ্চমাধ্যমিক শিক্ষা', 'স্নাতকোত্তর শিক্ষা'], ans: 2, exp: 'বিশ্বভারতী বিশ্ববিদ্যালয়ের অন্তর্ভুক্ত \'শিক্ষাভবন\'-এ উচ্চমাধ্যমিক স্তরের শিক্ষা প্রদান করা হয়।'},
+      {q: '“আমি একজন ভারতীয়, প্রতিটি ভারতীয় আমার ভাই”—এই উক্তিটি করেন—', opts: ['বিদ্যাসাগর', 'বিবেকানন্দ', 'গান্ধিজি', 'রবীন্দ্রনাথ'], ans: 1, exp: 'সর্বজনীন ভ্রাতৃত্ববোধের ধারণা দিতে স্বামী বিবেকানন্দ এই বিখ্যাত উক্তিটি করেছিলেন।'},
+      {q: '“যদি তুমি ঈশ্বরকে পেতে চাও তবে মানবের সেবা করো।”—এই উক্তিটি—', opts: ['বিবেকানন্দের', 'রবীন্দ্রনাথের', 'রামমোহনের', 'বিদ্যাসাগরের'], ans: 0, exp: 'বিবেকানন্দের জীবনদর্শনের মূল কথা ছিল মানবসেবা, কারণ তিনি বিশ্বাস করতেন মানুষের সেবার মাধ্যমেই ঈশ্বর লাভ হয়।'},
+      {q: 'রামকৃষ্ণ মিশন প্রতিষ্ঠা করেছিলেন—', opts: ['রামমোহন', 'গান্ধিজি', 'বিদ্যাসাগর', 'বিবেকানন্দ'], ans: 3, exp: 'মানবসেবা ও বেদান্ত ধর্ম প্রচারের উদ্দেশ্যে স্বামী বিবেকানন্দ ১৮৯৭ খ্রিস্টাব্দের ১ মে রামকৃষ্ণ মিশন প্রতিষ্ঠা করেন।'},
+      {q: 'বিবেকানন্দের মতে, শিক্ষার প্রধান লক্ষ্য ছিল—', opts: ['আধ্যাত্মিক বিকাশ', 'ধর্ম শিক্ষাদান', 'প্রকৃত মানুষ তৈরি', 'চারিত্রিক বিকাশ'], ans: 2, exp: 'বিবেকানন্দ মনে করতেন শিক্ষার চূড়ান্ত লক্ষ্য ও শেষ কথা হল প্রকৃত মানুষ তৈরি করা (Man Making Education)।'},
+      {q: 'বিবেকানন্দ মেয়েদের শিক্ষার জন্য বেলুড়ে যে মঠের পরিকল্পনা করেন, তার বর্তমান নাম হল—', opts: ['সারদা মন্দির', 'সারদামঠ', 'সারদা মঠ', 'রামকৃষ্ণ মঠ'], ans: 2, exp: 'নারীশিক্ষার প্রসারের উদ্দেশ্যে বিবেকানন্দ নারীদের জন্য \'সারদা মঠ\' স্থাপনের পরিকল্পনা করেছিলেন।'},
+      {q: '‘Education is Man Making’ বলেছেন—', opts: ['রবীন্দ্রনাথ', 'গান্ধিজি', 'বিবেকানন্দ', 'বিদ্যাসাগর'], ans: 2, exp: 'স্বামী বিবেকানন্দ মানুষ গড়ার শিক্ষা বা Man Making Education-এর ওপর সবচেয়ে বেশি গুরুত্ব আরোপ করেছেন।'},
+      {q: 'বিবেকানন্দের মতে একজন শিক্ষকের থাকবে—', opts: ['জ্ঞানের প্রতি তৃষ্ণা', 'অধ্যবসায়', 'বাক্যে ও কর্মে পবিত্রতা', 'সব ক-টিই'], ans: 3, exp: 'তিনি মনে করতেন একজন শিক্ষক হবেন জ্ঞানবান, চরিত্রবান, পবিত্র এবং মানবতাবাদী।'},
+      {q: 'বিবেকানন্দ ছিলেন—', opts: ['প্রয়োগবাদী চিন্তাবিদ', 'একজন আদর্শবাদী প্রবক্তা', 'গণতান্ত্রিক সমাজবিদ ও মানবতাবাদী দার্শনিক', 'সব ক-টিই'], ans: 1, exp: 'তাঁর জীবনদর্শনের ভিত্তি ছিল বেদান্ত দর্শন, তাই তাঁকে মূলত একজন ভাববাদী বা আদর্শবাদী প্রবক্তা বলা হয়।'},
+      {q: 'বিবেকানন্দের মতে শিক্ষার লক্ষ্য—', opts: ['অন্তর্নিহিত সত্তার পরিপূর্ণ বিকাশ', 'চরিত্র গঠন ও ভ্রাতৃত্ববোধের জাগরণ', 'আধ্যাত্মিক বিকাশ ও আত্ম জাগরণের মর্ম উপলব্ধি', 'উপরোক্ত সব ক-টিই'], ans: 0, exp: 'বিবেকানন্দের মতে, শিক্ষা হল মানুষের ভেতরে থাকা অন্তর্নিহিত সত্তার পরিপূর্ণ বিকাশ।'},
+      {q: '‘ওঠো জাগো এবং লক্ষ্যে পৌঁছানো না পর্যন্ত থেমো না’ — এ কথা বলেন—', opts: ['রবীন্দ্রনাথ', 'বিদ্যাসাগর', 'বিবেকানন্দ', 'গান্ধিজি'], ans: 2, exp: 'পরাধীন ভারতবাসীকে আত্মবিশ্বাসী করে তুলতে স্বামী বিবেকানন্দ এই উদাত্ত আহ্বান জানিয়েছিলেন।'},
+      {q: '‘যদি তুমি ঈশ্বরকে খুঁজে পেতে চাও, মানুষের সেবা করো’—এই উক্তিটি করেছেন—', opts: ['বিবেকানন্দ', 'বিদ্যাসাগর', 'রবীন্দ্রনাথ', 'ঋষি অরবিন্দ'], ans: 0, exp: 'মানবসেবাকে ঈশ্বরের আরাধনা মনে করে স্বামী বিবেকানন্দ এই কথাটি বলেছিলেন।'},
+      {q: '“হে ভারত, ভুলিও না—তোমার নারীজাতির আদর্শ সীতা, সাবিত্রী, দময়ন্তী।”—এ কথা বলেছেন?', opts: ['বিদ্যাসাগর', 'বিবেকানন্দ', 'রবীন্দ্রনাথ', 'গান্ধিজি'], ans: 1, exp: 'ভারতীয় নারীত্বের আদর্শ স্মরণ করিয়ে দিতে স্বামী বিবেকানন্দ এই কথাটি বলেছেন।'},
+      {q: '‘জাতি গঠনের জন্য সর্বাগ্রে প্রয়োজন শিক্ষিকা সুমাতার’ — এই উক্তিটি করেছেন—', opts: ['বিবেকানন্দ', 'বিদ্যাসাগর', 'রবীন্দ্রনাথ', 'কেউই নয়'], ans: 0, exp: 'নারীশিক্ষার ওপর গুরুত্ব দিতে গিয়ে স্বামী বিবেকানন্দ মাতা এবং শিক্ষিকাদের মহান ভূমিকার কথা তুলে ধরেন।'},
+      {q: '‘ভগবান হল সত্য এবং সত্যই ভগবান’—এ কথা বলেছেন—', opts: ['বিবেকানন্দ', 'রবীন্দ্রনাথ', 'বিদ্যাসাগর', 'গান্ধিজি'], ans: 0, exp: 'ঈশ্বর ও সত্যের অভিন্নতা বোঝাতে স্বামী বিবেকানন্দ এই উক্তিটি করেছেন।'}
+    ]
+  },
+  5: {
+    name: 'Set 5',
+    icon: '🔥',
+    topic: 'স্বামী বিবেকানন্দের শিক্ষাদর্শন',
+    questions: [
+      {q: '“Education is the manifestation of the perfection already in man.”—সংজ্ঞাটি কোন্ শিক্ষাবিদের?', opts: ['রবীন্দ্রনাথ', 'গান্ধিজি', 'বিবেকানন্দ', 'রুশো'], ans: 2, exp: 'স্বামী বিবেকানন্দের দেওয়া এটি শিক্ষার সবচেয়ে বিখ্যাত সংজ্ঞা, যার অর্থ শিক্ষা হল মানুষের অন্তর্নিহিত সত্তার পরিপূর্ণ বিকাশ।'},
+      {q: '“আমি সন্ন্যাসী, আমি সর্বভূতে ঈশ্বরের মহিমা উপলব্ধি করেছি...” কে বলেছেন?', opts: ['রবীন্দ্রনাথ', 'বিবেকানন্দ', 'গান্ধিজি', 'ডিউই'], ans: 1, exp: 'স্বামী বিবেকানন্দ সর্বধর্মসমন্বয় প্রসঙ্গে এই বিখ্যাত কথাটি বলেছিলেন।'},
+      {q: '“Each Soul is a star. Man is potentially divine.”—কে বলেছেন?', opts: ['রুশো', 'ডিউই', 'গান্ধিজি', 'বিবেকানন্দ'], ans: 3, exp: 'প্রতিটি মানুষের মধ্যেই ঈশ্বরের অংশ ও মহৎ গুণাবলি রয়েছে, এটা বোঝাতেই স্বামী বিবেকানন্দ এটি বলেছেন।'},
+      {q: 'নীচের কোনটি বিবেকানন্দের রচনাবলি?', opts: ['ধর্মশিক্ষা', 'বিদ্যার যাচাই', 'ইউরোপ ভ্রমণ', 'True Education'], ans: 2, exp: '\'ইউরোপ ভ্রমণ\' স্বামী বিবেকানন্দের লেখা একটি বিখ্যাত গ্রন্থ।'},
+      {q: '“Education is the nervous association of certain ideas.”—কে বলেছেন?', opts: ['বিবেকানন্দ', 'গান্ধিজি', 'রবীন্দ্রনাথ', 'রুশো'], ans: 0, exp: 'স্বামী বিবেকানন্দ শিক্ষাকে ব্যাখ্যা করতে গিয়ে ব্যক্তি ও সমাজের গুরুত্ব বোঝাতে এই মন্তব্য করেছেন।'},
+      {q: 'বিবেকানন্দের মতে, শিক্ষার আপাত লক্ষ্য নীচের কোনটি?', opts: ['ব্যক্তিত্বের বিকাশ', 'আত্মবিশ্বাস', 'আত্মোপলব্ধি', 'দৈহিক বিকাশ'], ans: 3, exp: 'দৈহিক, মানসিক, নৈতিক, বৃত্তিমূলক ও আধ্যাত্মিক বিকাশকে তিনি শিক্ষার আপাত লক্ষ্য বলেছেন।'},
+      {q: '“জনসাধারণের জীবনের উপযোগী শিক্ষা দিতে হবে...” এই উক্তিটি বিবেকানন্দ কোন্ ক্ষেত্রে বলেছেন?', opts: ['বৃত্তিশিক্ষা', 'পাঠ্যক্রম রচনা', 'শিক্ষার মাধ্যম', 'গণশিক্ষা'], ans: 1, exp: 'স্বামী বিবেকানন্দ ব্যবহারিক ও বাস্তব পাঠ্যক্রম রচনার ক্ষেত্রে এই নীতিটির ওপর জোর দিয়েছেন।'},
+      {q: 'বিবেকানন্দ শিক্ষার কোন্ পদ্ধতির কথা বলেছেন?', opts: ['স্বশিখন পদ্ধতি', 'কেন্দ্রীকরণ পদ্ধতি', 'ব্রহ্মচর্য পদ্ধতি', 'সব ক-টি'], ans: 3, exp: 'তিনি যোগ, ধ্যান, স্বশিখন, একাগ্রতা এবং ব্রহ্মচর্যের মতো পদ্ধতিগুলির কথা বলেছেন।'},
+      {q: 'শিক্ষার পদ্ধতি হিসেবে ‘প্রাণায়াম’ ও ‘ধ্যান’-এর কথা কে বলেছেন?', opts: ['রবীন্দ্রনাথ', 'গান্ধিজি', 'বিবেকানন্দ', 'ডিউই'], ans: 2, exp: 'মনের কেন্দ্রীকরণ বা একাগ্রতা বৃদ্ধির জন্য বিবেকানন্দ যোগ, প্রাণায়াম ও ধ্যানের ওপর গুরুত্ব দিয়েছেন।'},
+      {q: '“My idea of education is gurugrihavasa.”—এটি কে বলেছেন?', opts: ['বিবেকানন্দ', 'রুশো', 'ডিউই', 'গান্ধিজি'], ans: 0, exp: 'আদর্শ আশ্রমিক পরিবেশ এবং গুরুর সান্নিধ্যে শিক্ষার কথা বলতে গিয়ে স্বামী বিবেকানন্দ এটি বলেছেন।'},
+      {q: 'কোন্ শিক্ষাবিদ ‘ত্রিভাষা সূত্রের’ ওপর গুরুত্ব প্রদান করেছেন?', opts: ['রবীন্দ্রনাথ', 'ডিউই', 'বিবেকানন্দ', 'গান্ধিজি'], ans: 2, exp: 'স্বামী বিবেকানন্দ মাতৃভাষা, ইংরেজি এবং সংস্কৃত—এই তিনটি ভাষার প্রয়োগের কথা বলেছেন।'},
+      {q: '“সুযোগ দাও, শিক্ষা দাও, সকলে মহৎ হইতে পারে...” উক্তিটি কোন্ শিক্ষাবিদের?', opts: ['রবীন্দ্রনাথ', 'গান্ধিজি', 'বিবেকানন্দ', 'রুশো'], ans: 2, exp: 'গণশিক্ষায় সমাজের সব স্তরের মানুষের সমান অধিকার বোঝাতে স্বামী বিবেকানন্দ এই কথাটি বলেছিলেন।'},
+      {q: 'কোন্ শিক্ষাবিদ বলেছেন, “সমাজে সাম্য আনিবার একমাত্র উপায় উচ্চবর্ণের শক্তির স্বরূপ শিক্ষা ও কৃষ্টি আয়ত্ত করা।”', opts: ['বিবেকানন্দ', 'রবীন্দ্রনাথ', 'গান্ধিজি', 'ডিউই'], ans: 0, exp: 'সমাজে শ্রেণি বৈষম্য দূর করতে এবং গণশিক্ষার প্রসারের লক্ষ্যে বিবেকানন্দ এটি বলেছেন।'},
+      {q: 'বিবেকানন্দ শিশুর মধ্যে কোন্ ধরনের শৃঙ্খলা গঠনের কথা বলেছেন?', opts: ['স্বতঃস্ফূর্ত শৃঙ্খলা', 'বহিঃশৃঙ্খলা', 'সামাজিক শৃঙ্খলা', 'কোনোটিই নয়'], ans: 0, exp: 'তিনি বিশ্বাস করতেন শিশুকে স্বশিখনে পূর্ণ স্বাধীনতা দিলে তার মধ্যে আপনা থেকেই স্বতঃস্ফূর্ত শৃঙ্খলা আসবে।'},
+      {q: '“Strength is goodness, weakness is sin...” কে বলেছেন?', opts: ['রবীন্দ্রনাথ', 'রুশো', 'ডিউই', 'বিবেকানন্দ'], ans: 3, exp: 'শরীরশিক্ষার গুরুত্ব এবং দুর্বলতা ত্যাগ করার কথা বোঝাতে স্বামী বিবেকানন্দ এই বিখ্যাত উক্তিটি করেছেন।'}
+    ]
+  },
+  6: {
+    name: 'Set 6',
+    icon: '🇮🇳',
+    topic: 'বিবেকানন্দ ও মহাত্মা গান্ধীর শিক্ষাচিন্তা',
+    questions: [
+      {q: '“গীতা পাঠ অপেক্ষা ফুটবল খেলা শ্রেয়”—এটি কে বলেছেন?', opts: ['গান্ধিজি', 'বিবেকানন্দ', 'রবীন্দ্রনাথ', 'রুশো'], ans: 1, exp: 'সুস্থ শরীরই সুস্থ মনের ভিত্তি, তাই দৈহিক শরীরশিক্ষার ওপর জোর দিতে বিবেকানন্দ এই মন্তব্য করেছেন।'},
+      {q: 'বিবেকানন্দ কয়ধরনের যোগের কথা বলেছেন?', opts: ['১ ধরনের', '২ ধরনের', '৩ ধরনের', '৪ ধরনের'], ans: 3, exp: 'আত্মনিয়ন্ত্রণ ও আত্মোপলব্ধির জন্য তিনি মোট ৪ ধরনের যোগের কথা বলেছেন।'},
+      {q: 'বিবেকানন্দ কোন্ ধরনের যোগের কথা বলেছেন?', opts: ['কর্মযোগ', 'রাজযোগ', 'ভক্তিযোগ ও জ্ঞানযোগ', 'সব ক-টি'], ans: 3, exp: 'বিবেকানন্দ কর্মযোগ, রাজযোগ, ভক্তিযোগ এবং জ্ঞানযোগ—এই চারটি যোগের কথা বলেছেন।'},
+      {q: 'বিবেকানন্দের জীবনদর্শনের ভিত্তি কী ছিল?', opts: ['ধর্ম', 'যোগ', 'বেদান্ত দর্শন', 'ভাববাদী চিন্তা'], ans: 2, exp: 'তাঁর জীবনদর্শনের মূল ভিত্তি ছিল প্রাচীন ভারতীয় বেদান্ত দর্শন ও উপনিষদ।'},
+      {q: '“Education Should lay proper emphasis on creativity...” কে বলেছেন?', opts: ['গান্ধিজি', 'বিবেকানন্দ', 'রবীন্দ্রনাথ', 'ডিউই'], ans: 1, exp: 'শিক্ষার লক্ষ্য হিসেবে সৃজনশীলতা ও মৌলিক উৎকর্ষের ওপর গুরুত্ব দিয়ে স্বামী বিবেকানন্দ এটি বলেছেন।'},
+      {q: 'বিবেকানন্দ ধর্মশিক্ষার জন্য কোন্ গ্রন্থ পাঠের কথা বলেছেন?', opts: ['রামায়ণ', 'মহাভারত', 'উপনিষদ', 'সব ক-টি'], ans: 3, exp: 'তিনি রামায়ণ, মহাভারত ও উপনিষদ থেকে নীতিগল্প পড়িয়ে ধর্মশিক্ষার ওপর জোর দিয়েছেন।'},
+      {q: 'বিবেকানন্দ মেয়েদের শিক্ষাদানের জন্য কী দল গঠনের কথা বলেছেন?', opts: ['ব্রহ্মচারী দল', 'ব্রহ্মচারিণী দল', 'সন্ন্যাসী দল', 'শিক্ষিকা দল'], ans: 1, exp: 'নারীশিক্ষার প্রসারের উদ্দেশ্যে তিনি গ্রামে গ্রামে বিদ্যালয় স্থাপন এবং \'ব্রহ্মচারিণী দল\' গঠনের কথা বলেছেন।'},
+      {q: 'বিবেকানন্দ মানুষ গড়ার শিক্ষা ও চরিত্র গঠনের শিক্ষা প্রসঙ্গে কোন্ বিষয়ের ওপর গুরুত্ব প্রদানের কথা বলেছেন?', opts: ['সহযোগিতা', 'সমন্বয়', 'শান্তি', 'সব ক-টি'], ans: 3, exp: 'শিকাগো ধর্ম সম্মেলনে তিনি মানুষ গড়ার ক্ষেত্রে সহযোগিতা, আত্তীকরণ, সমন্বয় এবং শান্তির ওপর বিশেষভাবে গুরুত্ব দিয়েছেন।'},
+      {q: '‘নইতালিম’ কথাটির অর্থ হল—', opts: ['পুরাতন শিক্ষা', 'ঐতি ঐতিহ্যের শিক্ষা', 'হস্তশিক্ষা', 'নতুন শিক্ষা'], ans: 3, exp: 'মহাত্মা গান্ধী প্রবর্তিত বুনিয়াদি শিক্ষাকেই \'নই তালিম\' বা \'নতুন বা নয়াশিক্ষা\' বলা হয়।'},
+      {q: '‘নইতালিম শিক্ষা’ প্রবর্তন করেছিলেন—', opts: ['বিবেকানন্দ', 'গান্ধিজি', 'বিদ্যাসাগর', 'রামমোহন'], ans: 1, exp: 'জাতির বুনিয়াদ গড়তে মহাত্মা গান্ধী এই নতুন শিক্ষা পরিকল্পনা বা \'নই তালিম\' প্রবর্তন করেছিলেন।'},
+      {q: 'গান্ধিজির শিক্ষা পরিকল্পনা প্রকাশিত হয়েছিল—', opts: ['হরিজন পত্রিকায়', 'সোমপ্রকাশ পত্রিকায়', 'হিন্দু প্যাট্রিয়ট', 'সংবাদ কৌমুদীতে'], ans: 0, exp: '১৯৩৫ থেকে ১৯৩৭ খ্রিস্টাব্দ পর্যন্ত ধারাবাহিকভাবে গান্ধিজির শিক্ষাচিন্তা \'হরিজন\' পত্রিকায় প্রকাশিত হয়েছিল।'},
+      {q: '‘True Education’ পুস্তিকাটির লেখক হলেন—', opts: ['বিদ্যাসাগর', 'গান্ধিজি', 'বিবেকানন্দ', 'রাজা রামমোহন রায়'], ans: 1, exp: '\'True Education\' হলো মহাত্মা গান্ধীর লেখা একটি বিখ্যাত শিক্ষামূলক গ্রন্থ।'},
+      {q: '“The end of knowledge must be the building of character.”—উক্তিটি', opts: ['বিবেকানন্দের', 'বিদ্যাসাগরের', 'গান্ধিজির', 'রামমোহনের'], ans: 2, exp: 'চরিত্রগঠন ও নৈতিক শিক্ষার ওপর সর্বাধিক গুরুত্ব দিতে গিয়ে মহাত্মা গান্ধী এটি বলেছেন।'},
+      {q: '‘Towards new Education’ পুস্তকটির লেখক হলেন—', opts: ['বিবেকানন্দ', 'বিদ্যাসাগর', 'গান্ধিজি', 'রবীন্দ্রনাথ'], ans: 2, exp: '১৯৩৭ খ্রিস্টাব্দে প্রকাশিত \'Towards New Education\' বইটি মহাত্মা গান্ধীর লেখা।'},
+      {q: 'গান্ধিজির মতে, সব ধরনের অর্থনৈতিক বৈষম্য দূর করে যে সমাজ গঠিত হবে, তাই হল—', opts: ['ব্রাহ্মসমাজ', 'সর্বোদয় সমাজ', 'অর্থবৈষম্যহীন সমাজ', 'বেদান্ত সমাজ'], ans: 1, exp: 'জাতি, ধর্ম, বর্ণ ও অর্থ নির্বিশেষে বৈষম্যহীন যে রামরাজ্য গান্ধিজি গড়তে চেয়েছিলেন, তার নাম \'সর্বোদয় সমাজ\'।'}
+    ]
+  },
+  7: {
+    name: 'Set 7',
+    icon: '🧶',
+    topic: 'মহাত্মা গান্ধীর বুনিয়াদি শিক্ষা ও দর্শন',
+    questions: [
+      {q: 'হস্তশিল্পকে কেন্দ্র করে শিক্ষাব্যবস্থা গড়ে তুলেছিলেন—', opts: ['বিবেকানন্দ', 'বিদ্যাসাগর', 'রবীন্দ্রনাথ', 'গান্ধিজি'], ans: 3, exp: 'মহাত্মা গান্ধী তাঁর বুনিয়াদি শিক্ষায় হস্তশিল্পের (যেমন- তাঁত বোনা, সুতো কাটা) ওপর ভিত্তি করে পাঠ্যক্রম রচনার কথা বলেছেন।'},
+      {q: 'গান্ধিজির নামের সঙ্গে যুক্ত—', opts: ['মুদালিয়র কমিশন', 'জাকির হোসেন কমিটি', 'রাধাকৃষ্ণন কমিশন', 'কোঠারি কমিশন'], ans: 1, exp: 'গান্ধিজির বুনিয়াদি শিক্ষা পরিকল্পনার সফল রূপায়ণের জন্য ড. জাকির হোসেনের সভাপতিত্বে একটি কমিটি গঠিত হয়েছিল।'},
+      {q: 'গান্ধিজি ছিলেন একজন—', opts: ['ভাববাদী', 'প্রয়োগবাদী', 'প্রকৃতিবাদী', 'সব ক-টি-ই'], ans: 3, exp: 'গান্ধিজির জীবনদর্শনের ভিত্তি ছিল আদর্শবাদ (ভাববাদ), প্রয়োগবাদ ও বাস্তববাদ বা প্রকৃতিবাদের এক অপূর্ব সমন্বয়।'},
+      {q: '‘My Experiment with the Truth’ গ্রন্থটি লেখেন—', opts: ['গান্ধিজি', 'জওহরলাল নেহরু', 'বিবেকানন্দ', 'কেউই নয়'], ans: 0, exp: 'সত্য ও অহিংসার পূজারি মহাত্মা গান্ধীর আত্মজীবনীর নাম হলো \'My Experiments with Truth\'।'},
+      {q: 'গান্ধিজির জীবনদর্শনে যে বৈশিষ্ট্য দেখা যায় তা হল—', opts: ['অহিংসা', 'দারিদ্র্যের বিরুদ্ধে সংগ্রাম', 'শৃঙ্খলা', 'কোনোটিই নয়'], ans: 0, exp: 'গান্ধিজির জীবনদর্শনের অন্যতম প্রধান ভিত্তি হলো সত্য ও অহিংসা।'},
+      {q: '‘কাজের মাধ্যমে শিক্ষা’—এই নীতি গান্ধিজি গ্রহণ করায় শিক্ষার্থীরা—', opts: ['আত্মসচেতন হয়ে ওঠে', 'আত্মবিশ্বাসী হয়ে ওঠে', 'আত্মকেন্দ্রিক হয়ে ওঠে', 'স্বার্থপর হয়ে ওঠে'], ans: 1, exp: 'হস্তশিল্প ও কর্মের মাধ্যমে শিক্ষা গ্রহণ করলে শিক্ষার্থীর মধ্যে সৃজনক্ষমতা বাড়ে এবং তারা আত্মপ্রত্যয়ী বা আত্মবিশ্বাসী হয়ে ওঠে।'},
+      {q: '‘নইতালিম’ শিক্ষার আর-এক নাম হল—', opts: ['মাধ্যমিক শিক্ষা', 'প্রাথমিক শিক্ষা', 'সামগ্রিক শিক্ষা', 'বুনিয়াদি শিক্ষা'], ans: 3, exp: 'গান্ধিজি প্রবর্তিত বুনিয়াদি শিক্ষা বা Basic Education-কেই \'নই তালিম\' শিক্ষা বলা হয়।'},
+      {q: '‘অনুবন্ধ প্রণালীর’ শিক্ষাপদ্ধতি প্রয়োগ করেছিলেন—', opts: ['গান্ধিজি', 'রবীন্দ্রনাথ', 'বিবেকানন্দ', 'কেউই নয়'], ans: 0, exp: 'গান্ধিজি তাঁর শিক্ষণ পদ্ধতিতে অনুবন্ধ প্রণালীর প্রয়োগ করেছিলেন, যেখানে সমস্ত বিষয়কে একটি মূল হস্তশিল্পের সঙ্গে যুক্ত করে পড়ানোর কথা বলা হয়েছে।'},
+      {q: 'সর্বোদয় সমাজ প্রতিষ্ঠা করতে চেয়েছিলেন—', opts: ['গান্ধিজি', 'রামমোহন', 'রবীন্দ্রনাথ', 'বিবেকানন্দ'], ans: 0, exp: 'অহিংসা, প্রেম, সত্য ও ন্যায়ের ওপর প্রতিষ্ঠিত একটি বৈষম্যহীন রামরাজ্য বা সর্বোদয় সমাজ গঠন করাই ছিল গান্ধিজির লক্ষ্য।'},
+      {q: 'বুনিয়াদি শিক্ষাটি হল—', opts: ['শরীরকেন্দ্রিক', 'গানবাজনা কেন্দ্রিক', 'হস্তশিল্প কেন্দ্রিক', 'রাজনীতি কেন্দ্রিক'], ans: 2, exp: 'বুনিয়াদি শিক্ষার একেবারে কেন্দ্রে একটি উৎপাদনশীল হস্তশিল্পকে রাখার কথা বলা হয়েছে।'},
+      {q: 'গান্ধিজিকে কে ‘মহাত্মা’ উপাধি দিয়েছিলেন?', opts: ['বিবেকানন্দ', 'অরবিন্দ', 'বিদ্যাসাগর', 'রবীন্দ্রনাথ'], ans: 3, exp: 'দক্ষিণ আফ্রিকায় অসহযোগ আন্দোলন ও তাঁর মহান আত্মত্যাগের স্বীকৃতিস্বরূপ রবীন্দ্রনাথ ঠাকুর তাঁকে \'মহাত্মা\' উপাধি দেন।'},
+      {q: 'গান্ধিজি কার লেখার দ্বারা ‘মানবপ্রেম ও শ্রমের মর্যাদা’-র মূল্যবোধে অনুপ্রাণিত হয়েছিলেন?', opts: ['বুদ্ধদেবের', 'বিদ্যাসাগরের', 'টলস্টয়ের', 'প্লেটোর'], ans: 2, exp: 'গান্ধিজি রাশিয়ান সাহিত্যিক লিও টলস্টয়ের জীবন ও লেখার দ্বারা গভীরভাবে অনুপ্রাণিত হয়ে মানবপ্রেম ও শ্রমের মর্যাদার মূল্যবোধ গ্রহণ করেন।'},
+      {q: '‘ত্রিপত্র’ বলতে গান্ধিজি নীচের কোনটিকে বুঝিয়েছেন?', opts: ['অহিংসা', 'মানবপ্রেম', 'শ্রমের মর্যাদা', 'সব ক-টি'], ans: 3, exp: 'অহিংসা, মানবপ্রেম এবং শ্রমের মর্যাদা—এই তিনটি বিষয়কেই একত্রে গান্ধিজির শিক্ষাদর্শনে \'ত্রিপত্র\' বলা হয়েছে।'},
+      {q: 'গান্ধিজি কীসের ওপর ভিত্তি করে বুনিয়াদি শিক্ষা পরিকল্পনা করেছিলেন?', opts: ['অহিংসা', 'মানবপ্রেম', 'শ্রমের মর্যাদা', 'ত্রিপত্র'], ans: 3, exp: 'উপরে উল্লিখিত অহিংসা, মানবপ্রেম ও শ্রমের মর্যাদা—এই ত্রিপত্রের ওপর ভিত্তি করেই তিনি বুনিয়াদি শিক্ষার পরিকল্পনা রচনা করেছিলেন।'},
+      {q: '“I have no God to Serve but truth.” কে বলেছেন?', opts: ['বিবেকানন্দ', 'রবীন্দ্রনাথ', 'গান্ধিজি', 'ডিউই'], ans: 2, exp: 'ঈশ্বরই যে সত্যের প্রতীক এবং একমাত্র সত্যের মাধ্যমেই ঈশ্বরের উপলব্ধি ঘটে, তা বোঝাতে গান্ধিজি এই উক্তিটি করেছেন।'}
+    ]
+  },
+  8: {
+    name: 'Set 8',
+    icon: '☮️',
+    topic: 'মহাত্মা গান্ধীর জীবনদর্শন ও শিক্ষাদর্শন',
+    questions: [
+      {q: 'গান্ধিজির মতে, ‘সত্য অনুসন্ধানের উপায় ও উন্নত চরিত্র গঠনের ভিত্তি’ কী?', opts: ['মানবতা', 'মূল্যবোধ', 'অহিংসা', 'শ্রমের প্রতি মর্যাদা'], ans: 2, exp: 'গান্ধিজি মনে করতেন, অহিংসাই হলো সত্য অনুসন্ধানের একমাত্র উপায় এবং উন্নত চরিত্র গঠনের প্রধান ভিত্তি।'},
+      {q: '“Ahimsa is complete absence of ill will against all that lives.”—কে বলেছেন?', opts: ['রবীন্দ্রনাথ', 'বিবেকানন্দ', 'ডিউই', 'গান্ধিজি'], ans: 3, exp: 'সমস্ত জীবিত সত্তার প্রতি ক্ষতিকারক ইচ্ছার সম্পূর্ণ অভাবই হলো অহিংসা—এই মহান উক্তিটি মহাত্মা গান্ধীর।'},
+      {q: '“The only certain means of knowing God is non-violence Ahimsa and love.”—কে বলেছেন?', opts: ['বিবেকানন্দ', 'অরবিন্দ', 'রবীন্দ্রনাথ', 'গান্ধিজি'], ans: 3, exp: 'ঈশ্বরকে জানার একমাত্র নিশ্চিত মাধ্যম হলো অহিংসা ও প্রেম—গান্ধিজি তাঁর জীবনদর্শনে এই কথা বলেছেন।'},
+      {q: '“God is the source of light and life.”—কে বলেছেন?', opts: ['গান্ধিজি', 'বিবেকানন্দ', 'রবীন্দ্রনাথ', 'অরবিন্দ'], ans: 0, exp: 'ঈশ্বর হলেন আলো এবং জীবনের উৎস—এই বিশ্বাস থেকে গান্ধিজি এই উক্তিটি করেছেন।'},
+      {q: 'গান্ধিজি ‘সর্বোদয় সমাজ’ গঠনের মাধ্যমে কী গড়ে তুলতে চেয়েছিলেন?', opts: ['শ্রেণিহীন সমাজ', 'রামরাজ্য', 'অহিংসা', 'মানবপ্রেম'], ans: 1, exp: 'জাতি-ধর্ম-বর্ণ ও অর্থ নির্বিশেষে বৈষম্যহীন সর্বোদয় সমাজ গঠনের মাধ্যমে গান্ধিজি রামরাজ্য প্রতিষ্ঠা করতে চেয়েছিলেন।'},
+      {q: 'জাতি, ধর্ম, বর্ণ, অর্থ নির্বিশেষে বৈষম্যহীন সমাজ গঠন কীসের লক্ষ্য?', opts: ['অহিংসার', 'সর্বোদয় সমাজগঠনের', 'মানবতার বিকাশ', 'মূল্যবোধের'], ans: 1, exp: 'সমাজের সকল মানুষের সমান অধিকার ও বৈষম্যহীনতার নীতিটি গান্ধিজির \'সর্বোদয় সমাজ\' গঠনের মূল লক্ষ্য।'},
+      {q: 'গান্ধিজি কত খ্রিস্টাব্দে ‘Green Pamphlet’ পুরস্কার লাভ করেছিলেন?', opts: ['1892', '1890', '1891', '1895'], ans: 2, exp: '১৮৯১ খ্রিস্টাব্দে মহাত্মা গান্ধী ‘Green Pamphlet’ পুরস্কার পেয়ে আন্তর্জাতিক খ্যাতি ও স্বীকৃতি লাভ করেন।'},
+      {q: '“গান্ধিজির মতে, শিক্ষার লক্ষ্য হল আত্মোপলব্ধির মাধ্যমে ঈশ্বরের প্রতি বিশ্বাস তৈরি করা,”—এটি কোন্ ধরনের লক্ষ্য?', opts: ['চরম লক্ষ্য', 'আপাত লক্ষ্য', 'চরম ও আপাত লক্ষ্য', 'কোনোটিই নয়'], ans: 0, exp: 'আত্মোপলব্ধির মাধ্যমে ঈশ্বরের প্রতি বিশ্বাস অর্জন করাকে গান্ধিজি শিক্ষার চরম লক্ষ্য হিসেবে উল্লেখ করেছেন।'},
+      {q: '“True education should result not in material power but in spiritual force.”—কে বলেছেন?', opts: ['বিবেকানন্দ', 'গান্ধিজি', 'রবীন্দ্রনাথ', 'রুশো'], ans: 1, exp: 'প্রকৃত শিক্ষা মানুষের জাগতিক বা বস্তুগত ক্ষমতার পরিবর্তে আধ্যাত্মিক শক্তির বিকাশ ঘটাবে—এটি গান্ধিজির বিশ্বাস।'},
+      {q: '“Such education must be self supporting.”—কে বলেছেন?', opts: ['বিবেকানন্দ', 'গান্ধিজি', 'রবীন্দ্রনাথ', 'রুশো'], ans: 1, exp: 'শিক্ষাকে শিক্ষার্থীর স্বাবলম্বী হওয়ার উপায় হিসেবে গড়ে তোলার জন্য গান্ধিজি এটি বলেছেন।'},
+      {q: '3Hs বলতে গান্ধিজি কী বলেছেন?', opts: ['Hand, Head and Hot', 'Hand, Head and House', 'Hand, Head and Heart', 'Hope, Head and Heart'], ans: 2, exp: 'সাধারণ পুঁথিগত 3Rs-এর বদলে গান্ধিজি হস্ত (Hand), মস্তিষ্ক (Head) এবং হৃদয় (Heart)-এর শিক্ষার কথা বলেছেন।'},
+      {q: '“Self realisation is the Sumum bonum of life and education”—কে বলেছেন?', opts: ['বিবেকানন্দ', 'গান্ধিজি', 'রবীন্দ্রনাথ', 'ডিউই'], ans: 1, exp: 'আত্মোপলব্ধিই হলো জীবন ও শিক্ষার সর্বোচ্চ কল্যাণ—এটি মহাত্মা গান্ধীর বিখ্যাত উক্তি।'},
+      {q: '“This education ought to be for them a kind of insurance against Unemployment.”—কে বলেছেন?', opts: ['গান্ধিজি', 'রবীন্দ্রনাথ', 'বিবেকানন্দ', 'ডিউই'], ans: 0, exp: 'বুনিয়াদি শিক্ষাকে বেকারের বিরুদ্ধে এক ধরনের বিমা হিসেবে বিবেচনা করে তিনি এটি বলেছেন।'},
+      {q: '“The whole process of education should be imparted through some handicraft or industry.” —কে বলেছেন?', opts: ['বিবেকানন্দ', 'রবীন্দ্রনাথ', 'গান্ধিজি', 'অরবিন্দ'], ans: 2, exp: 'শিক্ষাদান প্রক্রিয়া সম্পূর্ণভাবে কোনো হস্তশিল্প বা উৎপাদনের মাধ্যমে হওয়া উচিত—এটি গান্ধিজির বুনিয়াদি শিক্ষার ভিত্তি।'},
+      {q: 'গান্ধিজির শিক্ষার পাঠ্যক্রমের মূল বিষয় কী?', opts: ['গণিত', 'সমাজবিদ্যা', 'শরীরচর্চা', 'হস্তশিল্প'], ans: 3, exp: 'গান্ধিজির শিক্ষা পরিকল্পনা বা বুনিয়াদি শিক্ষার একেবারে কেন্দ্রবিন্দুতে একটি মূল হস্তশিল্প রাখার কথা বলা হয়েছে।'}
+    ]
+  },
+  9: {
+    name: 'Set 9',
+    icon: '🌲',
+    topic: 'মহাত্মা গান্ধী ও জঁ জ্যাক রুশো',
+    questions: [
+      {q: '“We must procure the best teacher for our children whatever it may cost.”—কে বলেছেন?', opts: ['বিবেকানন্দ', 'রবীন্দ্রনাথ', 'গান্ধিজি', 'বিদ্যাসাগর'], ans: 2, exp: 'আদর্শ শিক্ষক নির্বাচনের গুরুত্ব বোঝাতে গিয়ে তিনি বলেছেন যে, যেকোনো মূল্যে সন্তানের জন্য শ্রেষ্ঠ শিক্ষক সংগ্রহ করতে হবে।'},
+      {q: '“I always felt that the true text book for the pupils is his teacher.”—কে বলেছেন?', opts: ['গান্ধিজি', 'বিবেকানন্দ', 'রবীন্দ্রনাথ', 'ডিউই'], ans: 0, exp: 'শিক্ষকই হলেন শিক্ষার্থীর কাছে প্রকৃত পাঠ্যপুস্তক—এই কথাটি মহাত্মা গান্ধী বলেছেন।'},
+      {q: '“শিশুদের উপর ইংরেজি শিক্ষার বোঝা চাপিয়ে দিলে তাদের স্বাভাবিক বিকাশ বাধাগ্রস্ত হবে...” কে বলেছেন?', opts: ['বিবেকানন্দ', 'রবীন্দ্রনাথ', 'ডিউই', 'গান্ধিজি'], ans: 3, exp: 'মাতৃভাষায় শিক্ষাদানের পক্ষে জোরালো সওয়াল করে গান্ধিজি বিদেশি ভাষার কুপ্রভাব সম্পর্কে এটি বলেছেন।'},
+      {q: '“I have always been opposed to corporal punishment.”—কে বলেছেন?', opts: ['রবীন্দ্রনাথ', 'ডিউই', 'রুশো', 'গান্ধিজি'], ans: 3, exp: 'আত্মসংযম ও অহিংসার আদর্শে বিশ্বাসী গান্ধিজি সবসময়ই শিশুর শারীরিক শাস্তির বিরোধিতা করেছেন।'},
+      {q: '“Life without religion is life without Principle...” কে বলেছেন?', opts: ['বিবেকানন্দ', 'গান্ধিজি', 'রবীন্দ্রনাথ', 'অরবিন্দ'], ans: 1, exp: 'ধর্মহীন জীবনকে তিনি হালছাড়া নৌকার সঙ্গে তুলনা করেছেন।'},
+      {q: 'গান্ধিজির শিক্ষাক্ষেত্রে সর্বশ্রেষ্ঠ অবদান নীচের কোন্টি?', opts: ['অহিংসা', 'সর্বোদয় সমাজ গঠন', 'বুনিয়াদি শিক্ষা', 'মানবপ্রেম'], ans: 2, exp: 'শিক্ষাক্ষেত্রে গান্ধিজির সবচেয়ে বড় ও বাস্তব অবদান হলো কর্মভিত্তিক \'বুনিয়াদি শিক্ষা\' প্রবর্তন।'},
+      {q: 'কত খ্রিস্টাব্দে ওয়ার্ডা পরিকল্পনা গৃহীত হয়েছিল?', opts: ['1938', '1932', '1942', '1937'], ans: 3, exp: '১৯৩৭ খ্রিস্টাব্দে ওয়ার্ডা নামক স্থানে শিক্ষাবিদদের এক সম্মেলনে গান্ধিজির এই পরিকল্পনা গৃহীত হয়।'},
+      {q: 'গান্ধিজির শিক্ষাকে বুনিয়াদি শিক্ষা বলার কারণ কী?', opts: ['জাতীয় ভিত্তি', 'প্রাচীন ভারতীয় সংস্কৃতিভিত্তিক', 'জাতীয় অর্থনীতিভিত্তিক', 'শ্রমভিত্তিক'], ans: 1, exp: 'প্রাচীন ভারতীয় সংস্কৃতিকে কেন্দ্র করে এই শিক্ষার উদ্ভব বলে এটি বুনিয়াদি শিক্ষা নামে পরিচিত।'},
+      {q: 'রুশো কোন্ ধরনের দার্শনিক ছিলেন?', opts: ['ভাববাদী', 'প্রয়োগবাদী', 'প্রকৃতিবাদী', 'বস্তুবাদী'], ans: 2, exp: 'ফরাসি দার্শনিক জঁ জ্যাক রুশো ছিলেন একজন চরম প্রকৃতিবাদী দার্শনিক।'},
+      {q: 'রুশোর সব শিক্ষা অর্জিত হয়েছিল কীভাবে?', opts: ['বিদ্যালয় শিক্ষার মাধ্যমে', 'জীবন অভিজ্ঞতার মধ্য দিয়ে', 'প্রকৃতি থেকে', 'পিতামাতার মাধ্যমে'], ans: 1, exp: 'রুশোর আত্মজীবনী থেকে জানা যায়, তিনি প্রথাগত বিদ্যালয় শিক্ষার বদলে বাস্তব জীবনের অভিজ্ঞতার মাধ্যমেই সব শিক্ষা অর্জন করেছিলেন।'},
+      {q: '“Emile is a seed book of future history.”—কে মন্তব্য করেন?', opts: ['ডিউই', 'মোর্লে', 'রবীন্দ্রনাথ', 'বিবেকানন্দ'], ans: 1, exp: 'রুশোর \'এমিল\' গ্রন্থের গুরুত্ব উপলব্ধি করে শিক্ষাবিদ মোর্লে (Morle) এই বিখ্যাত মন্তব্য করেছিলেন।'},
+      {q: 'রুশোর প্রকৃতিবাদের মূলকথা নীচের কোনটি?', opts: ['স্বাধীনতা', 'বিকাশ', 'সক্রিয়তা', 'সব ক-টি'], ans: 3, exp: 'স্বাধীনতা (Freedom), বিকাশ (Growth), আগ্রহ (Interest) ও সক্রিয়তা (Activity) হলো তাঁর প্রকৃতিবাদের মূল কথা।'},
+      {q: '“Cities are the graves of human civilisation.”—কে বলেছেন?', opts: ['রুশো', 'জন ডিউই', 'গান্ধিজি', 'রবীন্দ্রনাথ'], ans: 0, exp: 'নগর বা শহরগুলিকে মানবসভ্যতার কবরভূমি বলে উল্লেখ করেছেন প্রকৃতিবাদী রুশো।'},
+      {q: 'রুশোর ‘Emile’ গ্রন্থ কত খ্রিস্টাব্দে প্রকাশিত হয়?', opts: ['1750', '1761', '1762', '1759'], ans: 2, exp: '১৭৬২ খ্রিস্টাব্দে শিশুকেন্দ্রিক শিক্ষার রূপরেখা নিয়ে রুশোর বিখ্যাত গ্রন্থ \'এমিল\' প্রকাশিত হয়।'},
+      {q: '‘Go back to nature’ এই স্লোগানটি কে দিয়েছেন?', opts: ['রবীন্দ্রনাথ', 'রুশো', 'ডিউই', 'গান্ধিজি'], ans: 1, exp: 'কৃত্রিম সমাজ ছেড়ে পুনরায় \'প্রকৃতির মাঝে ফিরে যাও\'—এই আহ্বান জানিয়েছেন রুশো।'}
+    ]
+  },
+  10: {
+    name: 'Set 10',
+    icon: '👶',
+    topic: 'জঁ জ্যাক রুশোর শিক্ষাদর্শন (পর্ব ১)',
+    questions: [
+      {q: 'রুশোর কাল্পনিক বালক চরিত্র নীচের কোনটি?', opts: ['সোফি', 'এমিল', 'এমিল ও সোফি', 'কোনোটিই নয়'], ans: 1, exp: 'রুশোর শিক্ষামূলক গ্রন্থটির নামই হলো \'এমিল\', যা মূলত একটি কাল্পনিক বালক চরিত্রের ওপর ভিত্তি করে লেখা।'},
+      {q: '“The child is a book which the teacher has to learn from page to page.”—উক্তিটি কে করেছেন?', opts: ['ডিউই', 'বিবেকানন্দ', 'রবীন্দ্রনাথ', 'রুশো'], ans: 3, exp: 'শিক্ষকের উচিত শিশুকে একটি বইয়ের মতো প্রথম থেকে শেষ পাতা পর্যন্ত অধ্যয়ন করা—এটি রুশো বলেছেন।'},
+      {q: '“Everything is good as it leaves the hands of the Author of things...” উক্তিটি কোন্ শিক্ষাবিদের?', opts: ['রুশো', 'ডিউই', 'রবীন্দ্রনাথ', 'গান্ধিজি'], ans: 0, exp: 'প্রকৃতির কাছ থেকে যা আসে সবই পবিত্র, কিন্তু মানুষের হাতে এলেই তা কলুষিত হয়—এটি রুশোর বিখ্যাত উক্তি।'},
+      {q: '‘The Social Contract’ পুস্তকের লেখক কে?', opts: ['বিবেকানন্দ', 'রবীন্দ্রনাথ', 'রুশো', 'ডিউই'], ans: 2, exp: 'ফরাসি বিপ্লবকে অনুপ্রাণিত করা বিখ্যাত রাজনৈতিক ও সমাজতাত্ত্বিক গ্রন্থ \'The Social Contract\' (১৭৬২) রুশোর লেখা।'},
+      {q: '“শিক্ষা হল শিশুর স্বতঃস্ফূর্ত আত্মবিকাশের প্রক্রিয়া...” কে বলেছেন?', opts: ['ডিউই', 'বিবেকানন্দ', 'গান্ধিজি', 'রুশো'], ans: 3, exp: 'শিক্ষাকে সম্পূর্ণ কৃত্রিমতামুক্ত এবং স্বতঃস্ফূর্ত প্রক্রিয়া হিসেবে ব্যাখ্যা করেছেন রুশো।'},
+      {q: 'রুশোর মতে, শিক্ষার সাধারণ লক্ষ্যগুলি কী কী?', opts: ['জ্ঞানেন্দ্রিয় ও কর্মেন্দ্রিয়গুলিকে কার্যকর করে তোলা', 'বৌদ্ধিক বিকাশ', 'সামাজিক ও নৈতিক মূল্যবোধের বিকাশ', 'সব ক-টি'], ans: 3, exp: 'শিশুর দৈহিক, বৌদ্ধিক, জ্ঞানেন্দ্রিয়, কর্মেন্দ্রিয় এবং সামাজিক বিকাশ—সবগুলোই রুশোর মতে শিক্ষার সাধারণ লক্ষ্য।'},
+      {q: '“To live is the trade I wish to teach him.”—উক্তিটি কোন্ শিক্ষাবিদের?', opts: ['রুশো', 'ডিউই', 'বিবেকানন্দ', 'গান্ধিজি'], ans: 0, exp: '\'এমিল\' গ্রন্থে কৈশোরকালের শিক্ষার লক্ষ্য বোঝাতে গিয়ে রুশো জীবনযাপনের এই কথাটি বলেছেন।'},
+      {q: 'রুশো মানবজীবন বিকাশের কয়টি স্তরের কথা বলেছেন?', opts: ['২ টি', '৩ টি', '৪ টি', '১০ টি'], ans: 2, exp: '\'এমিল\'-এর শিক্ষা বা বালকজীবনকে রুশো মূলত শৈশব, বাল্য, কৈশোর ও যৌবন—এই ৪টি স্তরে ভাগ করেছেন।'},
+      {q: 'রুশোর মতে, শিশুর শৈশবকালের শিক্ষার লক্ষ্য নীচের কোনটি?', opts: ['প্রকৃতি পর্যবেক্ষণ', 'শরীর-স্বাস্থ্য গঠন', 'বৌদ্ধিক বিকাশ', 'নৈতিক বিকাশ'], ans: 1, exp: '১-৫ বছর বয়স পর্যন্ত শৈশবকালে শিশুর প্রধান লক্ষ্য হবে কেবল শরীর ও স্বাস্থ্য গঠন করা।'},
+      {q: 'রুশোর ‘এমিল’ গ্রন্থের কয়টি খণ্ড?', opts: ['২ টি', '৩ টি', '৪ টি', '৫ টি'], ans: 3, exp: 'রুশোর লেখা \'এমিল\' গ্রন্থটি মোট ৫টি খণ্ডে বিভক্ত।'},
+      {q: 'রুশোর ‘এমিল’ গ্রন্থের কয়টি খণ্ডে ‘এমিলের শিক্ষা’ নিয়ে আলোচনা রয়েছে?', opts: ['চারটি', 'পাঁচটি', 'প্রথম চারটি', 'শেষ চারটি'], ans: 2, exp: 'গ্রন্থের প্রথম ৪টি খণ্ডে বালকদের (অর্থাৎ এমিলের) শিক্ষার স্তর নিয়ে আলোচনা করা হয়েছে।'},
+      {q: 'এমিল গ্রন্থের কোন্ খণ্ডে ‘সোফি’ অর্থাৎ মেয়েদের শিক্ষার কথা বলা হয়েছে?', opts: ['প্রথম খণ্ডে', 'দ্বিতীয় খণ্ডে', 'তৃতীয় খণ্ডে', 'পঞ্চম খণ্ডে'], ans: 3, exp: 'গ্রন্থের একেবারে শেষ বা পঞ্চম খণ্ডে কাল্পনিক নারী চরিত্র \'সোফিয়া\' বা মেয়েদের শিক্ষার কথা বলা হয়েছে।'},
+      {q: 'রুশোর মতে, বাল্যকালের শিক্ষার মূল লক্ষ্য হল—', opts: ['প্রকৃতি পর্যবেক্ষণ', 'ইন্দ্রিয়গুলির বিকাশ', 'প্রকৃতি পর্যবেক্ষণ ও ইন্দ্রিয়ের বিকাশ', 'প্রকৃতি পর্যবেক্ষণ ও অভিজ্ঞতার মাধ্যমে ইন্দ্রিয়ের বিকাশ ঘটানো'], ans: 3, exp: '৫-১২ বছর বয়সে শিশুরা প্রকৃতি থেকে অভিজ্ঞতার মাধ্যমে জ্ঞান অর্জন করবে ও ইন্দ্রিয়ের বিকাশ ঘটাবে।'},
+      {q: 'রুশো শিশুর কোন্ জীবন বিকাশের স্তরে ‘ধনাত্মক শিক্ষার’ কথা বলেছেন?', opts: ['শৈশবকালে', 'বাল্যকালে', 'কৈশোরকালে', 'যৌবনকালে'], ans: 2, exp: '১২-১৫ বছর বয়সে বা কৈশোরকালে শিশুর ইতিবাচক বা ধনাত্মক শিক্ষা (Positive education) আরম্ভ হয়।'},
+      {q: '“The only habit the child should be allowed to contract is that of having no habits.”—এই উক্তিটি কোন্ শিক্ষাবিদের?', opts: ['জন ডিউই', 'রুশো', 'বিবেকানন্দ', 'রবীন্দ্রনাথ'], ans: 1, exp: 'শৈশবকালে শিশুকে কোনো নির্দিষ্ট বদভ্যাস বা অভ্যাসের দাস হতে দেওয়া উচিত নয়—এটি বোঝাতে রুশো এই কথা বলেছেন।'}
+    ]
+  },
+  11: {
+    name: 'Set 11',
+    icon: '🔍',
+    topic: 'জঁ জ্যাক রুশোর শিক্ষাদর্শন (পর্ব ২)',
+    questions: [
+      {q: 'রুশো, যৌবনকালে (15-20 বছর) কোন্ ধরনের শিক্ষার ওপর গুরুত্ব প্রদান করেছেন?', opts: ['শিল্পশিক্ষা', 'যৌনশিক্ষা', 'সংযমের শিক্ষা', 'সব ক-টি'], ans: 3, exp: 'যৌবনকালে প্রক্ষোভের বিকাশের সাথে সাথে যুবক-যুবতীদের সামাজিক শিক্ষা, যৌনশিক্ষা এবং সংযমের শিক্ষাদানের কথা বলেছেন।'},
+      {q: '“Exercise the body, the organs, the senses and powers...” উক্তিটি কার?', opts: ['রুশো', 'ডিউই', 'গান্ধিজি', 'রবীন্দ্রনাথ'], ans: 0, exp: 'বাল্যকালে শিশুদের ইন্দ্রিয় ও শরীরের ব্যায়ামের ওপর জোর দিতে গিয়ে রুশো এটি বলেছেন।'},
+      {q: '“আমি বইকে ঘৃণা করি, যা শিশুর কাছে অভিশাপ স্বরূপ।”—কে বলেছেন?', opts: ['বিবেকানন্দ', 'রবীন্দ্রনাথ', 'গান্ধিজি', 'রুশো'], ans: 3, exp: 'গতানুগতিক পুঁথিগত শিক্ষার তীব্র সমালোচনা করে রুশো বইকে শিশুর অভিশাপ বলেছেন।'},
+      {q: '“Men are born to serve women are born to please.”—উক্তিটি কোন্ শিক্ষাবিদের?', opts: ['ডিউই', 'রুশো', 'বিবেকানন্দ', 'গান্ধিজি'], ans: 1, exp: 'নারী শিক্ষার লক্ষ্য সম্পর্কে রুশোর দৃষ্টিভঙ্গি ছিল যে, নারীকে মূলত পুরুষের সেবার জন্যই শিক্ষিত হতে হবে।'},
+      {q: '“Give your scholar no verbal lesson. He should be taught by experience alone.”—উক্তিটি কোন্ শিক্ষাবিদের?', opts: ['বিবেকানন্দ', 'রবীন্দ্রনাথ', 'রুশো', 'ডিউই'], ans: 2, exp: 'মৌখিক শিক্ষার বদলে প্রত্যক্ষ অভিজ্ঞতা বা Observation-এর মাধ্যমে শিক্ষাদানের ওপর জোর দিতে রুশো এটি বলেছেন।'},
+      {q: 'রুশোর মতে, আবিষ্কার পদ্ধতি শিশুকে কোন্ বিষয়ে শিক্ষার সমস্যার সমাধান করতে সাহায্য করে?', opts: ['ভাষাশিক্ষার', 'সমাজবিজ্ঞান শিক্ষার', 'প্রকৃতি বিজ্ঞান ও গাণিতিক শিক্ষার', 'চারুকলা শিক্ষার'], ans: 2, exp: 'আবিষ্কার পদ্ধতি শিশুর চিন্তার বিকাশ ঘটায় এবং বিশেষত প্রকৃতিবিজ্ঞান ও গাণিতিক সমস্যা সমাধানে সাহায্য করে।'},
+      {q: 'শিশুর জ্ঞানেন্দ্রিয় ও বিচারক্ষমতার বিকাশে কোন্ পদ্ধতি বিশেষভাবে সাহায্য করে?', opts: ['আবিষ্কারক পদ্ধতি', 'কর্মকেন্দ্রিক পদ্ধতি', 'প্রত্যক্ষ অভিজ্ঞতা ও পর্যবেক্ষণ পদ্ধতি', 'খেলাভিত্তিক পদ্ধতি'], ans: 2, exp: 'রুশো মনে করেন প্রত্যক্ষ অভিজ্ঞতা ও প্রকৃতি পর্যবেক্ষণের ফলেই শিশুর জ্ঞানেন্দ্রিয় সবচেয়ে ভালোভাবে বিকশিত হয়।'},
+      {q: '“Education should be Practical rather than oral.”—উক্তিটি কার?', opts: ['ডিউই', 'রুশো', 'রবীন্দ্রনাথ', 'বিবেকানন্দ'], ans: 1, exp: 'শিক্ষার ব্যবহারিক বা প্রায়োগিক দিকের ওপর জোর দিতে গিয়ে রুশো এই মন্তব্য করেন।'},
+      {q: 'যে শিক্ষায় শিশুর মনকে অপরিণত অবস্থায় জ্ঞানের বোঝা চাপিয়ে দেওয়া হয় তখন তাকে কী শিক্ষা বলা হয়?', opts: ['নেতিবাচক শিক্ষা', 'ইতিবাচক শিক্ষা', 'শিশুকেন্দ্রিক শিক্ষা', 'কোনোটিই নয়'], ans: 1, exp: 'বয়স্কদের জ্ঞান ও আচরণ শিশুর ওপর জোর করে চাপিয়ে দেওয়াকেই রুশো \'ইতিবাচক শিক্ষা\' (Positive Education) বলে সমালোচনা করেছেন।'},
+      {q: 'কোন্ শিক্ষার পদ্ধতির মাধ্যমে ইন্দ্রিয়গুলিকে পরিমার্জনার মাধ্যমে শিশুকে শিক্ষাদানের কথা বলা হয়েছে?', opts: ['ইতিবাচক শিক্ষা পদ্ধতি', 'নেতিবাচক শিক্ষা পদ্ধতি', 'আবিষ্কার শিক্ষা পদ্ধতি', 'খেলাভিত্তিক শিক্ষা পদ্ধতি'], ans: 1, exp: 'রুশোর নেতিবাচক শিক্ষায় (Negative Education) সরাসরি পুস্তক পাঠের বদলে ইন্দ্রিয়ের পরিমার্জনার কথা বলা হয়েছে।'},
+      {q: 'রুশো শিশুর কোন্ ধরনের শিক্ষাকে অবহেলা করেছেন?', opts: ['আধ্যাত্মিক শিক্ষা', 'কর্মের মাধ্যমে শিক্ষা', 'স্বাধীনভাবে শিক্ষা', 'খেলাচ্ছলে শিক্ষা'], ans: 0, exp: 'রুশো মূলত প্রকৃতি ও বাস্তব অভিজ্ঞতার ওপর জোর দেওয়ায় প্রথাগত আধ্যাত্মিক শিক্ষাকে খুব একটা গুরুত্ব দেননি।'},
+      {q: 'রুশো শিশুর শিক্ষার জন্য কোন্ ধরনের শিক্ষাপদ্ধতির কথা বলেছেন?', opts: ['পর্যবেক্ষণ পদ্ধতি', 'খেলাভিত্তিক পদ্ধতি', 'উদাহরণের মাধ্যমে শিক্ষাদান', 'সব ক-টি'], ans: 3, exp: 'শিশুর শিক্ষার জন্য রুশো প্রত্যক্ষ অভিজ্ঞতা, খেলাভিত্তিক পদ্ধতি এবং উদাহরণের মাধ্যমে শিক্ষাদান—সবগুলিকেই সমর্থন করেছেন।'},
+      {q: 'রুশোর মতে, শিশুর শিক্ষক ক-টি?', opts: ['১ টি', '২ টি', '৩ টি', '৪ টি'], ans: 2, exp: 'রুশোর মতে শিশুর জীবনে প্রধানত ৩ জন শিক্ষক আছেন।'},
+      {q: 'রুশোর মতে, শিশুর শিক্ষক তিনটি কী কী?', opts: ['প্রকৃতি, মানুষ, উদ্ভিদ', 'প্রকৃতি, মানুষ ও বস্তু', 'প্রকৃতি, পিতামাতা, শিক্ষক', 'প্রকৃতি, বিদ্যালয় শিক্ষক এবং মা'], ans: 1, exp: 'রুশো বলেছেন শিশুর ৩ জন শিক্ষক হলেন—প্রকৃতি (Nature), মানুষ (Man) এবং বস্তু (Things)।'},
+      {q: '“To know how to suggest is the art of teaching”—কথাটি রুশো কোন্ প্রসঙ্গে বলেছেন?', opts: ['Art of Learning', 'Art of Teaching and Learning', 'Art of Teaching', 'Learning and experience'], ans: 2, exp: 'শিক্ষণ প্রক্রিয়ায় শিক্ষকের পরোক্ষ নির্দেশনার কৌশল বা \'Art of Teaching\' বোঝাতে তিনি এটি বলেছেন।'}
+    ]
+  },
+  12: {
+    name: 'Set 12',
+    icon: '🌊',
+    topic: 'জঁ জ্যাক রুশো এবং জন ডিউই',
+    questions: [
+      {q: 'রুশোর তিন ধরনের শিক্ষকের মধ্যে কোন্ শিক্ষককে নিয়ন্ত্রণ করা যায়?', opts: ['প্রকৃতি', 'বস্তু', 'মানুষ', 'উদ্ভিদ'], ans: 2, exp: 'প্রকৃতি, বস্তু ও মানুষের মধ্যে শুধুমাত্র মানুষ নামক শিক্ষককেই নিয়ন্ত্রণ করা সম্ভব বলে রুশো মনে করতেন।'},
+      {q: 'রুশোর মতে, শিক্ষাজগতে শিক্ষকের স্থান কেমন?', opts: ['মুখ্য', 'গৌণ', 'পিতার ন্যায়', 'ভগবানের মতো'], ans: 1, exp: 'শিশুকেন্দ্রিক শিক্ষায় রুশো শিক্ষককে একজন পথপ্রদর্শক হিসেবে গৌণ স্থানে রেখে শিক্ষার্থীকেই মুখ্য স্থানে রেখেছেন।'},
+      {q: 'রুশোর মতে, শিশুর কোন্ শিক্ষাতে মানুষের কোনো ভূমিকা থাকবে?', opts: ['আধ্যাত্মিক', 'গণিত', 'নৈতিক', 'ভাষা'], ans: 2, exp: 'রুশোর মতে, মানবীয় মূল্যবোধ ও নৈতিক শিক্ষার ক্ষেত্রে মানুষের (Society/Man) বিশেষ ভূমিকা রয়েছে।'},
+      {q: 'প্রকৃতিই একমাত্র শিক্ষক... রুশো এটিকে কীসের তত্ত্ব বলেছেন?', opts: ['প্রাকৃতিক ফলাফলের তত্ত্ব', 'স্বাধীনতার তত্ত্ব', 'প্রাকৃতিক ফলাফলের তত্ত্ব', 'শৃঙ্খলার তত্ত্ব'], ans: 2, exp: 'শিশু তার কাজের প্রাকৃতিক পরিণতির মধ্য দিয়ে শিখবে, এটিই রুশোর প্রাকৃতিক ফলাফলের তত্ত্ব বা Theory of Natural Consequences।'},
+      {q: '‘শিশু আগুনে হাত দিলে হাত পুড়বে’ এখান থেকে শিশু শিক্ষা লাভ করে... এটি কীসের উদাহরণ?', opts: ['প্রাকৃতিক ফলাফলের তত্ত্বের', 'শৃঙ্খলার তত্ত্বের', 'স্বাধীনতার তত্ত্বের', 'কোনোটিই নয়'], ans: 0, exp: 'প্রকৃতির কাছ থেকে কাজের সরাসরি শাস্তি বা ফল পাওয়াই হলো এই তত্ত্বের মূল বিষয়।'},
+      {q: 'নারীদেরও যে পুরুষদের মতো শিক্ষাদান প্রয়োজন এটা কোন্ শিক্ষাবিদ অনুভব করেননি?', opts: ['বিবেকানন্দ', 'রবীন্দ্রনাথ', 'ডিউই', 'রুশো'], ans: 3, exp: 'রুশো তাঁর তত্ত্বে নারীদের পুরুষদের সমকক্ষ হিসেবে শিক্ষার অধিকার দেননি, যা তাঁর একটি বড় সীমাবদ্ধতা।'},
+      {q: 'রুশো শিশুর শিখনের জন্য নীচের কোন্টিকে গুরুত্ব দেননি?', opts: ['পাঠ্যক্রমকে', 'পুস্তককে', 'শিক্ষাদান পদ্ধতিকে', 'শৃঙ্খলাকে'], ans: 1, exp: 'রুশো গতানুগতিক পুস্তক বা বইয়ের শিক্ষার ঘোর বিরোধী ছিলেন।'},
+      {q: 'রুশো কোন্ ধরনের শৃঙ্খলার কথা বলেছেন?', opts: ['স্বতঃস্ফূর্ত শৃঙ্খলা', 'বাহ্যিক শৃঙ্খলা', 'সামাজিক শৃঙ্খলা', 'কোনোটিই নয়'], ans: 0, exp: 'তিনি বিশ্বাস করতেন শিশুকে পূর্ণ স্বাধীনতা দিলে তার মধ্যে প্রকৃতিগতভাবেই স্বতঃস্ফূর্ত শৃঙ্খলা তৈরি হবে।'},
+      {q: 'রুশো নারীশিক্ষার পাঠ্যক্রমে কোন্ বিষয়কে স্থান দিয়েছেন?', opts: ['নাচ', 'গান', 'গৃহস্থালির কাজ', 'সব ক-টি'], ans: 3, exp: 'নারীদের জন্য রুশো মূলত নাচ, গান, সেলাই ও গৃহস্থালির কাজের মতো পাঠ্যক্রম রচনা করেছিলেন।'},
+      {q: 'জন ডিউই কোন্ ধরনের দার্শনিক?', opts: ['ভাববাদী', 'প্রকৃতিবাদী', 'প্রয়োগবাদী', 'বস্তুবাদী'], ans: 2, exp: 'জন ডিউই আমেরিকার বিখ্যাত প্রয়োগবাদী (Pragmatist) দার্শনিক ছিলেন।'},
+      {q: 'জন ডিউইর প্রয়োগবাদ দর্শনে কার বিবর্তনবাদের ধারণা পাওয়া যায়?', opts: ['প্লেটোর', 'ডারউইনের', 'মার্কসের', 'ফ্রোয়েবেলের'], ans: 1, exp: 'ডিউইর দর্শনে জার্মান ভাববাদ এবং চার্লস ডারউইনের বিবর্তনবাদের এক অদ্ভুত সমন্বয় লক্ষ করা যায়।'},
+      {q: 'প্রয়োগবাদের মূল কথা কী ছিল?', opts: ['সক্রিয়তা', 'পরিবর্তনশীলতা', 'উপযোগিতা', 'সব ক-টি'], ans: 3, exp: 'জ্ঞান স্থিতিশীল নয়, তাই সক্রিয়তা, পরিবর্তনশীলতা এবং উপযোগিতাই হলো প্রয়োগবাদ বা Pragmatism-এর মূল ভিত্তি।'},
+      {q: '“Everything is in the State of flow and flux. Nothing is constant”—কে বলেছেন?', opts: ['জন ডিউই', 'রুশো', 'হেরোডোটাস', 'ডারউইন'], ans: 2, exp: 'জগতে সবকিছুই গতিশীল ও পরিবর্তনশীল, কোনো কিছুই স্থির নেই—এটি বোঝাতে এই উদ্ধৃতি ব্যবহৃত হয়েছে (হেরাক্লিটাসের মত)।'},
+      {q: 'কোন্ শিক্ষাবিদের দার্শনিক চিন্তায় ভাববাদ, প্রকৃতিবাদ ও বিবর্তনবাদের সমন্বয় দেখা যায়?', opts: ['রুশো', 'ডিউই', 'রবীন্দ্রনাথ', 'বিবেকানন্দ'], ans: 1, exp: 'জন ডিউইর প্রয়োগবাদী দর্শনেই এই তিনটি পৃথক দর্শনের অপূর্ব মেলবন্ধন দেখা যায়।'},
+      {q: 'ডিউই শিক্ষা নিয়ে পরীক্ষানিরীক্ষা করতে কী প্রতিষ্ঠা করেছিলেন?', opts: ['বিশ্ববিদ্যালয়', 'পরীক্ষামূলক বিদ্যালয়', 'বিশ্ববিদ্যালয় প্রারম্ভিক বিদ্যালয়', 'কোনোটিই নয়'], ans: 2, exp: '১৯০১ খ্রিস্টাব্দে ডিউই ইউনিভার্সিটি অফ শিকাগোতে \'বিশ্ববিদ্যালয় প্রারম্ভিক বিদ্যালয়\' তৈরি করেছিলেন।'}
+    ]
+  },
+  13: {
+    name: 'Set 13',
+    icon: '🧪',
+    topic: 'জন ডিউইর শিক্ষাদর্শন (পর্ব ১)',
+    questions: [
+      {q: 'ডিউইর বিশ্ববিদ্যালয় প্রারম্ভিক বিদ্যালয় কী নামে পরিচিত?', opts: ['ল্যাবরেটরি স্কুল', 'কিন্ডারগার্টেন স্কুল', 'মন্তেসরি বিদ্যালয়', 'নার্সারি বিদ্যালয়'], ans: 0, exp: 'ডিউই প্রতিষ্ঠিত এই পরীক্ষামূলক বিদ্যালয়টি \'Laboratory School\' নামেই সর্বাধিক পরিচিত।'},
+      {q: 'ডিউইর Laboratory School-এর ধারণা থেকে আধুনিককালে কোন্ School-এর উদ্ভব ঘটে?', opts: ['নার্সারি বিদ্যালয়', 'প্রাক্-প্রাথমিক বিদ্যালয়', 'পরীক্ষামূলক বিদ্যালয়', 'মাধ্যমিক বিদ্যালয়'], ans: 2, exp: 'ডিউইর এই ধারণাকে কেন্দ্র করেই পরবর্তীতে Experimental বা Active School-এর উদ্ভব ঘটেছিল।'},
+      {q: '‘Democracy and Education’ (1916) পুস্তকটি কার লেখা?', opts: ['রুশো', 'জন ডিউই', 'গান্ধিজি', 'রবীন্দ্রনাথ'], ans: 1, exp: 'আধুনিক গণতান্ত্রিক শিক্ষার প্রেক্ষাপটে লেখা \'Democracy and Education\' ডিউইর অন্যতম শ্রেষ্ঠ গ্রন্থ।'},
+      {q: '‘The School and Child’ পুস্তকটির লেখক কে?', opts: ['জন ডিউই', 'রুশো', 'বিবেকানন্দ', 'গান্ধিজি'], ans: 0, exp: 'ডিউই শিক্ষা, বিদ্যালয় ও শিশুর মনস্তত্ত্ব নিয়ে \'The School and Child\' গ্রন্থটি রচনা করেছেন।'},
+      {q: '“Life is development and that development is life.”—কে বলেছেন?', opts: ['রুশো', 'ফ্রোয়েবেল', 'ডিউই', 'বিবেকানন্দ'], ans: 2, exp: 'জীবন ও শিক্ষাকে একটি নিরবচ্ছিন্ন বিকাশ প্রক্রিয়া হিসেবে বর্ণনা করতে গিয়ে ডিউই এই মন্তব্য করেছেন।'},
+      {q: 'জন ডিউইর শিক্ষাচিন্তার মূলকথা কী?', opts: ['উপযোগিতা', 'চিন্তা', 'কর্ম', 'চিন্তা ও কর্ম'], ans: 3, exp: 'চিন্তা এবং কর্ম একত্রে সমন্বিত হলেই শিক্ষার্থী জ্ঞানকে সার্থক রূপে অর্জন করতে পারে, এটিই ডিউইর মূলকথা।'},
+      {q: '“শিক্ষা হল পরিবেশকে নিয়ন্ত্রণের মাধ্যমে ব্যক্তির মধ্যে যে সকল শক্তি ও সামর্থ্য রয়েছে তার সবকিছুর বিকাশ ঘটানো”—কে বলেছেন?', opts: ['রুশো', 'বিবেকানন্দ', 'রবীন্দ্রনাথ', 'ডিউই'], ans: 3, exp: 'পরিবেশের সঙ্গে মিথস্ক্রিয়ার মাধ্যমে শিক্ষার্থীর অভিজ্ঞতা ও সামর্থ্যের পুনর্গঠনকেই ডিউই শিক্ষা বলেছেন।'},
+      {q: 'ডিউইর মতে, মানুষ সব সময় কোথা থেকে জ্ঞান ও অভিজ্ঞতা অর্জন করে?', opts: ['বিদ্যালয় থেকে', 'সমাজ থেকে', 'প্রকৃতি থেকে', 'পরিবার থেকে'], ans: 1, exp: 'মানুষ মূলত তার সমাজ পরিবেশের সঙ্গে ক্রিয়া-প্রতিক্রিয়ার মধ্য দিয়েই সমস্ত অভিজ্ঞতা অর্জন করে থাকে।'},
+      {q: '“শিক্ষার কাজ হল অসহায় শিশুকে সুখী, নীতিপরায়ণ ও সক্ষম মানুষ করে গড়ে তোলা।”—কে বলেছেন?', opts: ['ডিউই', 'রুশো', 'রবীন্দ্রনাথ', 'গান্ধিজি'], ans: 0, exp: 'শিশুর নৈতিক ও সামাজিক দক্ষতার ওপর জোর দিয়ে প্রয়োগবাদী ডিউই শিক্ষার এই লক্ষ্যের কথা বলেছিলেন।'},
+      {q: 'ডিউই পাঠ্যক্রম রচনার জন্য নীচের কোন্ নীতির ওপর গুরুত্ব দিয়েছেন?', opts: ['নমনীয়তা', 'অভিজ্ঞতাভিত্তিক', 'উপযোগিতাভিত্তিক', 'সব ক-টি'], ans: 3, exp: 'ডিউই মনে করতেন পাঠ্যক্রম হবে পরিবর্তনশীল বা নমনীয়, উপযোগিতাভিত্তিক এবং শিশুর জীবনের অভিজ্ঞতাভিত্তিক।'},
+      {q: 'ডিউইর সমস্যা সমাধানমূলক পরীক্ষণ পদ্ধতির মূলনীতি নীচের কোন্টি?', opts: ['জানা', 'অনুভব করা', 'কাজ', 'সব ক-টি'], ans: 3, exp: 'ডিউইর মতে—জানা (Knowing), অনুভব করা (Feeling) এবং কাজ (Doing)—এই তিনটি বিষয়ের সমন্বয়ে সমস্যার সমাধান ঘটে।'},
+      {q: 'ডিউইর সমস্যা সমাধান পদ্ধতির পরবর্তী সংস্করণ পদ্ধতিটি কী?', opts: ['পরীক্ষা পদ্ধতি', 'কর্মকেন্দ্রিক পদ্ধতি', 'প্রকল্প পদ্ধতি', 'আবিষ্কারক পদ্ধতি'], ans: 2, exp: 'ডিউইর সমস্যার সমাধান পদ্ধতির ওপর ভিত্তি করেই পরবর্তীতে আধুনিক \'Project Method\' বা প্রকল্প পদ্ধতির সৃষ্টি হয়।'},
+      {q: 'ডিউইর সমস্যা সমাধান পদ্ধতির সংস্করণ করেন কারা?', opts: ['ডিউই ও কিলপ্যাট্রিক', 'কিলপ্যাট্রিক ও স্টিভেনসন', 'স্টিভেনসন ও ডিউই', 'ডিউই ও রুশো'], ans: 1, exp: 'শিক্ষাবিদ উইলিয়াম হিলপ্যাট্রিক (Kilpatrick) এবং স্টিভেনসন (Stevenson) ডিউইর তত্ত্বকে পরিমার্জন করে প্রকল্প পদ্ধতি চালু করেন।'},
+      {q: 'ডিউইর শিক্ষণ পদ্ধতি নীচের কোন্টি?', opts: ['কর্মের মাধ্যমে শিক্ষা', 'সমন্বয়ী পদ্ধতি', 'পরীক্ষামূলক পদ্ধতি', 'সব ক-টি'], ans: 3, exp: 'তিনি প্রত্যক্ষ অভিজ্ঞতা, কর্মের মাধ্যমে, সমস্যার সমাধান এবং পরীক্ষামূলক পদ্ধতির সাহায্যে শিক্ষাদানের কথা বলেছেন।'},
+      {q: 'খেলার প্রাধান্যমূলক পর্যায়ে শিশু কোন্ বিষয়ে শিক্ষালাভ করবে?', opts: ['সাহিত্য', 'গণিত', 'ভূগোল', 'ইতিহাস'], ans: 2, exp: 'ডিউই মনে করতেন প্রথম বা খেলার পর্যায়ে শিশু পরিবেশের সাথে মিথস্ক্রিয়া করে মূলত ভূগোলের সাধারণ ধারণা লাভ করবে।'}
+    ]
+  },
+  14: {
+    name: 'Set 14',
+    icon: '🤝',
+    topic: 'জন ডিউইর শিক্ষাদর্শন (পর্ব ২)',
+    questions: [
+      {q: 'খেলার প্রাধান্যমূলক পর্যায়ের বয়স স্তর নীচের কোন্টি?', opts: ['১-৪ বছর', '৪-৮ বছর', '৮-১২ বছর', '১২ বছরের পরবর্তী'], ans: 1, exp: 'ডিউই শিক্ষা পরিকল্পনার প্রথম পর্যায় বা খেলার প্রাধান্যমূলক পর্যায়কে ৪ থেকে ৮ বছর বয়সের মধ্যে রেখেছেন।'},
+      {q: 'স্বতঃস্ফূর্ত মনোযোগের পর্যায়ে বয়স স্তর নীচের কোন্টি?', opts: ['১-৪ বছর', '৪-৮ বছর', '৮-১২ বছর', '১২ বছরের পরবর্তী'], ans: 2, exp: '৮ থেকে ১২ বছর বয়সে শিশু প্রত্যক্ষ সমস্যা সমাধানের মাধ্যমে শিক্ষালাভ করে, যাকে স্বতঃস্ফূর্ত মনোযোগের পর্যায় বলা হয়।'},
+      {q: 'স্বতঃস্ফূর্ত মনোযোগের পর্যায়ে শিশুকে কোন্ বিষয়ে শিক্ষাদানের কথা বলা হয়েছে?', opts: ['গণিত', 'বিজ্ঞান', 'ইতিহাস', 'সমাজবিদ্যা'], ans: 3, exp: 'এই দ্বিতীয় পর্যায়ে ডিউই শিশুকে তার সমাজ পরিবেশের সঙ্গে খাপ খাওয়ানোর জন্য সমাজবিদ্যা শিক্ষাদানের কথা বলেছেন।'},
+      {q: 'ডিউইর সমস্যা সমাধানের প্রথম সোপানের নাম কী?', opts: ['তথ্যসংগ্রহ', 'কার্যসম্পাদন', 'সমস্যা সৃষ্টি', 'অভিজ্ঞতার পুনঃপ্রয়োগ'], ans: 2, exp: 'ডিউইর ৫টি সোপানের প্রথম ধাপে শিক্ষার্থীর সামনে এমন এক পরিস্থিতি তৈরি করা হয়, যাতে একটি সমস্যার সৃষ্টি হয়।'},
+      {q: 'ডিউইর সমস্যা সমাধানের শেষ সোপানের নাম কী?', opts: ['সমস্যা সৃষ্টি', 'তথ্য সংগ্রহ', 'প্রকল্প গঠন', 'অভিজ্ঞতা অর্জন ও পুনঃপ্রয়োগ'], ans: 3, exp: 'পঞ্চম ও সর্বশেষ স্তরে শিক্ষার্থী সমস্যার সমাধান থেকে অভিজ্ঞতা অর্জন করে এবং তা নতুন পরিস্থিতিতে প্রয়োগ করতে শেখে।'},
+      {q: '“School is a miniature Society”—কে বলেছেন?', opts: ['বিবেকানন্দ', 'ফ্রোয়েবেল', 'ডিউই', 'রুশো'], ans: 2, exp: 'বিদ্যালয় হলো একটি বৃহৎ সমাজেরই ক্ষুদ্র সংস্করণ—ডিউই তাঁর সমাজতাত্ত্বিক শিক্ষাদর্শনে এটি বলেছেন।'},
+      {q: '“শিক্ষা হল অভিজ্ঞতার, অভিজ্ঞতার দ্বারা এবং অভিজ্ঞতার জন্য”—কে বলেছেন?', opts: ['ডিউই', 'বিবেকানন্দ', 'রুশো', 'রবীন্দ্রনাথ'], ans: 0, exp: 'আব্রাহাম লিংকনের গণতন্ত্রের সংজ্ঞার অনুকরণে ডিউই শিক্ষার এই চমৎকার সংজ্ঞাটি দিয়েছেন।'},
+      {q: '‘অগ্রগামী প্রগতিশীল শিক্ষার’ কথা কোন্ শিক্ষাবিদ বলেছেন?', opts: ['রবীন্দ্রনাথ', 'বিবেকানন্দ', 'ডিউই', 'রুশো'], ans: 2, exp: 'প্রগতিশীল শিক্ষা বা Progressive Education-এর প্রবক্তা হলেন জন ডিউই।'},
+      {q: '‘শিশুর উপর শাসন ও তাড়নের পরিবর্তে স্বাধীন ও স্বতঃস্ফূর্ত ক্রিয়ার মাধ্যমে ব্যক্তিত্বের বিকাশ সাধন।’—কোন্ শিক্ষার মূলকথা?', opts: ['কর্মকেন্দ্রিক শিক্ষার', 'অগ্রগামী প্রগতিশীল শিক্ষা', 'সামাজিক শিক্ষা', 'নৈতিক শিক্ষা'], ans: 1, exp: 'প্রগতিশীল শিক্ষায় শিক্ষার্থীর অবাধ স্বাধীনতা এবং স্বতঃস্ফূর্ত কাজের মাধ্যমে শিক্ষালাভের ওপর জোর দেওয়া হয়।'},
+      {q: 'ডিউই কীসের সংজ্ঞাকে অনুসরণ করে শিক্ষার সংজ্ঞা দিয়েছেন?', opts: ['সমাজতন্ত্রের', 'গণতন্ত্রের', 'একনায়কতন্ত্রের', 'রাজতন্ত্রের'], ans: 1, exp: 'তিনি আমেরিকার প্রাক্তন রাষ্ট্রপতি আব্রাহাম লিংকনের দেওয়া \'গণতন্ত্রের\' সংজ্ঞাকে অনুসরণ করে শিক্ষার সংজ্ঞা নির্ধারণ করেছেন।'},
+      {q: 'ডিউইর মতে, সমাজজীবনের অপরিহার্য অঙ্গ কোন্টি?', opts: ['অভিজ্ঞতা', 'উপযোগিতা', 'মূল্যবোধ', 'শিক্ষা'], ans: 3, exp: 'ডিউই মনে করতেন সমাজকে টিকিয়ে রাখতে ও সামনের দিকে এগিয়ে নিতে \'শিক্ষা\' হলো সমাজের সবচেয়ে অপরিহার্য অঙ্গ।'},
+      {q: 'কোন্ শিক্ষাবিদের শিক্ষাচিন্তা থেকে ভারতে 6-14 বছর বয়স পর্যন্ত অবৈতনিক ও বাধ্যতামূলক শিক্ষার ধারণার উদ্ভব হয়েছে?', opts: ['রুশো', 'বিবেকানন্দের', 'ডিউইর', 'গান্ধিজির'], ans: 2, exp: 'প্রগতিশীল গণতান্ত্রিক শিক্ষাব্যবস্থায় ডিউই সর্বজনীন শিক্ষার কথা বলেছিলেন যা থেকে পরবর্তীকালে অবৈতনিক শিক্ষার ধারণার পুষ্টি ঘটে।'},
+      {q: '“School is a Simplified, Purified and better balanced Society.”—কে বলেছেন?', opts: ['রুশো', 'গান্ধিজি', 'রবীন্দ্রনাথ', 'ডিউই'], ans: 3, exp: 'বিদ্যালয়কে সমাজের একটি সরল, মার্জিত এবং সুষম প্রতিচ্ছবি হিসেবে বর্ণনা করতে ডিউই এই মন্তব্য করেছেন।'},
+      {q: 'ডিউইর মতে, শিক্ষক শিক্ষার্থীর কোন্ বিষয়ের বিকাশে উদ্যোগী হবেন?', opts: ['যুক্তিশক্তি', 'চিন্তাশক্তি', 'কর্ম-অভিজ্ঞতা', 'সব ক-টি'], ans: 3, exp: 'শিক্ষক শিক্ষার্থীর বন্ধু ও নির্দেশক হিসেবে তার যুক্তি, চিন্তাশক্তি ও কর্ম-অভিজ্ঞতা বিকাশে সাহায্য করবেন।'},
+      {q: 'ডিউই শিশুর মধ্যে কোন্ ধরনের শৃঙ্খলা গঠনের কথা বলেছেন?', opts: ['আত্মশৃঙ্খলা', 'মুক্তশৃঙ্খলা', 'সামাজিক শৃঙ্খলা', 'সব ক-টি'], ans: 3, exp: 'শিক্ষার্থীদের মধ্যে আত্মশৃঙ্খলা এবং মুক্ত শৃঙ্খলার পাশাপাশি সমাজবদ্ধ হওয়ার জন্য সামাজিক শৃঙ্খলা গড়ে তোলার কথা বলেছেন তিনি।'}
+    ]
+  }
+};
+
+// ============================================================
+//  গ্লোবাল ভেরিয়েবল
+// ============================================================
+const LABELS = ['ক', 'খ', 'গ', 'ঘ'];
+let currentSetId = 1;
+let cur = 0, score = 0, wrong = 0, answered = false, timerInterval, timeLeft = 10 * 60;
+let userAnswers = [];
+let isLoggedIn = false;
+let currentUser = null;
+let pendingSetId = null; 
+
+// ============================================================
+//  হাব পেজ বিল্ড
+// ============================================================
+function buildHub() {
+  const grid = document.getElementById('setGrid');
+  grid.innerHTML = '';
+  for (let i = 1; i <= TOTAL_SETS; i++) {
+    const set = allSets[i];
+    const card = document.createElement('div');
+    card.className = 'set-card';
+    card.innerHTML = `
+      <div class="icon">${set.icon}</div>
+      <div class="set-num">${set.name}</div>
+      <div class="set-title">${set.topic}</div>
+      <div class="set-meta"><span>১৫ প্রশ্ন</span><span>১০ মিনিট</span></div>
+    `;
+    card.onclick = () => selectSet(i);
+    grid.appendChild(card);
+  }
+}
+
+function showHub() {
+  document.getElementById('hubPage').classList.remove('hidden');
+  document.getElementById('testArea').classList.add('hidden');
+  document.getElementById('resultWrap').classList.remove('show');
+  document.getElementById('timerBox').classList.remove('danger');
+  clearInterval(timerInterval);
+  if (currentUser) {
+    document.getElementById('hubUserInfo').innerHTML = `👤 ${currentUser.username} — Test দিতে সেট সিলেক্ট করো।`;
+  } else {
+    document.getElementById('hubUserInfo').innerHTML = '';
+  }
+}
+
+function goToHub() {
+  document.getElementById('testArea').classList.add('hidden');
+  document.getElementById('resultWrap').classList.remove('show');
+  document.getElementById('hubPage').classList.remove('hidden');
+  document.getElementById('timerBox').classList.remove('danger');
+  clearInterval(timerInterval);
+}
+
+// ============================================================
+//  সেট সিলেক্ট - লগইন চেক
+// ============================================================
+function selectSet(id) {
+  currentSetId = id;
+  const set = allSets[id];
+  
+  if (isLoggedIn && currentUser) {
+    const setAttempts = currentUser.attempts[id] || 0;
+    if (setAttempts >= MAX_ATTEMPTS) {
+      alert(`⚠️ আপনি এই অ্যাকাউন্ট দিয়ে ${set.name} এর সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন। আর Test দেওয়া সম্ভব নয়।`);
+      return;
+    }
+    startQuiz(id);
+    return;
+  }
+  
+  pendingSetId = id;
+  document.getElementById('loginSetName').textContent = `📚 ${set.name} — ${set.topic}`;
+  document.getElementById('loginOverlay').classList.add('active');
+  document.getElementById('loginUsername').value = '';
+  document.getElementById('loginPassword').value = '';
+  document.getElementById('loginError').style.display = 'none';
+  document.getElementById('limitInfo').style.display = 'none';
+  document.getElementById('loginBtn').disabled = false;
+  document.getElementById('loginUsername').focus();
+}
+
+// ============================================================
+//  লগইন ফাংশন
+// ============================================================
+function doLoginFromSet() {
+  const username = document.getElementById('loginUsername').value.trim();
+  const password = document.getElementById('loginPassword').value.trim();
+  const errorEl = document.getElementById('loginError');
+  const limitInfo = document.getElementById('limitInfo');
+  const loginBtn = document.getElementById('loginBtn');
+
+  if (!username || !password) {
+    errorEl.textContent = '❌ দয়া করে ইউজারনেম ও পাসওয়ার্ড দিন।';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  const user = userData.find(u => u.username === username && u.password === password);
+  if (user) {
+    const setAttempts = user.attempts[currentSetId] || 0;
+    if (setAttempts >= MAX_ATTEMPTS) {
+      limitInfo.style.display = 'block';
+      document.getElementById('limitMsg').textContent = `আপনি এই অ্যাকাউন্ট দিয়ে ${allSets[currentSetId].name} এর সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন। আর Test দেওয়া সম্ভব নয়।`;
+      errorEl.style.display = 'none';
+      loginBtn.disabled = true;
+      return;
+    }
+    
+    isLoggedIn = true;
+    currentUser = user;
+    errorEl.style.display = 'none';
+    limitInfo.style.display = 'none';
+    loginBtn.disabled = false;
+    document.getElementById('loginOverlay').classList.remove('active');
+    
+    document.getElementById('hubUserInfo').innerHTML = `👤 ${currentUser.username} — Test দিতে সেট সিলেক্ট করো।`;
+    
+    startQuiz(currentSetId);
+  } else {
+    errorEl.textContent = '❌ ভুল ইউজারনেম বা পাসওয়ার্ড। আবার চেষ্টা করুন।';
+    errorEl.style.display = 'block';
+    limitInfo.style.display = 'none';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('loginPassword').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doLoginFromSet();
+  });
+  document.getElementById('loginUsername').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doLoginFromSet();
+  });
+  buildHub();
+  document.getElementById('hubPage').classList.remove('hidden');
+  document.getElementById('testArea').classList.add('hidden');
+  document.getElementById('resultWrap').classList.remove('show');
+});
+
+// ============================================================
+//  কুইজ ফাংশন
+// ============================================================
+function startQuiz(setId) {
+  if (!isLoggedIn || !currentUser) return;
+  
+  const setAttempts = currentUser.attempts[setId] || 0;
+  if (setAttempts >= MAX_ATTEMPTS) {
+    alert(`⚠️ আপনি এই সেটের সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন।`);
+    return;
+  }
+  
+  currentUser.attempts[setId] = (currentUser.attempts[setId] || 0) + 1;
+  
+  cur = 0; score = 0; wrong = 0; answered = false;
+  timeLeft = 10 * 60; userAnswers = [];
+  document.getElementById('hubPage').classList.add('hidden');
+  document.getElementById('resultWrap').classList.remove('show');
+  document.getElementById('testArea').classList.remove('hidden');
+  document.getElementById('timerBox').classList.remove('danger');
+  
+  const set = allSets[setId];
+  document.getElementById('testSetLabel').textContent = set.name;
+  document.getElementById('testSetName').textContent = 'শিক্ষাবিজ্ঞান';
+  document.getElementById('testTopic').textContent = set.topic;
+  
+  clearInterval(timerInterval);
+  timerInterval = setInterval(tick, 1000);
+  loadQ();
+}
+
+function tick() {
+  timeLeft--;
+  const m = Math.floor(timeLeft / 60);
+  const s = timeLeft % 60;
+  document.getElementById('timerDisplay').textContent = m + ':' + (s < 10 ? '0' : '') + s;
+  if (timeLeft <= 60) document.getElementById('timerBox').classList.add('danger');
+  if (timeLeft <= 0) { clearInterval(timerInterval); showResult(); }
+}
+
+function loadQ() {
+  answered = false;
+  const set = allSets[currentSetId];
+  const q = set.questions[cur];
+  document.getElementById('qNum').textContent = 'প্রশ্ন ' + (cur + 1) + ' / ' + set.questions.length;
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('progressFill').style.width = ((cur + 1) / set.questions.length * 100) + '%';
+  document.getElementById('nextBtn').disabled = true;
+  document.getElementById('nextBtn').textContent = cur === set.questions.length - 1 ? 'ফলাফল দেখো' : 'পরবর্তী →';
+  document.getElementById('explanation').classList.remove('show');
+
+  const opts = document.getElementById('qOpts');
+  opts.innerHTML = '';
+  q.opts.forEach((o, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = '<div class="opt-circle">' + LABELS[i] + '</div><div class="opt-text">' + o + '</div>';
+    btn.onclick = () => answer(i);
+    opts.appendChild(btn);
+  });
+}
+
+function answer(i) {
+  if (answered) return;
+  answered = true;
+  const set = allSets[currentSetId];
+  const q = set.questions[cur];
+  userAnswers[cur] = i;
+  const btns = document.querySelectorAll('.opt');
+  btns.forEach(b => b.classList.add('disabled'));
+  btns[q.ans].classList.add('correct');
+  if (i !== q.ans) { btns[i].classList.add('wrong'); wrong++; }
+  else score++;
+  document.getElementById('scoreShow').textContent = 'সঠিক: ' + score + ' | ভুল: ' + wrong;
+  document.getElementById('explanationText').innerHTML = '<strong>ব্যাখ্যা:</strong> ' + q.exp;
+  document.getElementById('explanation').classList.add('show');
+  document.getElementById('nextBtn').disabled = false;
+}
+
+function nextQ() {
+  const set = allSets[currentSetId];
+  cur++;
+  if (cur >= set.questions.length) { clearInterval(timerInterval); showResult(); return; }
+  loadQ();
+}
+
+function showResult() {
+  document.getElementById('testArea').classList.add('hidden');
+  const rw = document.getElementById('resultWrap');
+  rw.classList.add('show');
+  const set = allSets[currentSetId];
+  const pct = Math.round(score / set.questions.length * 100);
+  document.getElementById('finalScore').textContent = score;
+  document.getElementById('rbCorrect').textContent = score;
+  document.getElementById('rbWrong').textContent = wrong;
+  document.getElementById('rbPct').textContent = pct + '%';
+  
+  const remaining = MAX_ATTEMPTS - (currentUser.attempts[currentSetId] || 0);
+  document.getElementById('attemptInfo').innerHTML = `👤 ${currentUser.username} — ${set.name}: বাকি আছে <strong>${remaining}</strong> বার Test দেওয়ার সুযোগ (সর্বোচ্চ ${MAX_ATTEMPTS} বার)`;
+  
+  const grades = [
+    [90, '🌟', 'অসাধারণ!'],
+    [70, '👍', 'খুব ভালো!'],
+    [50, '📚', 'ভালো চেষ্টা!'],
+    [0, '💪', 'চেষ্টা চালিয়ে যাও!']
+  ];
+  const g = grades.find(x => pct >= x[0]);
+  document.getElementById('resultIcon').textContent = g[1];
+  document.getElementById('resultGrade').textContent = g[2] + ' (' + set.topic + ')';
+}
+
+function showReview() {
+  document.getElementById('resultWrap').classList.remove('show');
+  document.getElementById('testArea').classList.remove('hidden');
+  cur = 0;
+  loadReview();
+}
+
+function loadReview() {
+  const set = allSets[currentSetId];
+  if (cur >= set.questions.length) { 
+    document.getElementById('testArea').classList.add('hidden'); 
+    document.getElementById('resultWrap').classList.add('show'); 
+    return; 
+  }
+  const q = set.questions[cur];
+  document.getElementById('qNum').textContent = 'Review — প্রশ্ন ' + (cur + 1) + ' / ' + set.questions.length;
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('progressFill').style.width = ((cur + 1) / set.questions.length * 100) + '%';
+  document.getElementById('nextBtn').disabled = false;
+  document.getElementById('nextBtn').textContent = cur === set.questions.length - 1 ? 'শেষ করো' : 'পরবর্তী →';
+  document.getElementById('nextBtn').onclick = () => { cur++; loadReview(); };
+
+  const opts = document.getElementById('qOpts');
+  opts.innerHTML = '';
+  q.opts.forEach((o, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt disabled';
+    if (i === q.ans) btn.classList.add('correct');
+    else if (userAnswers[cur] === i) btn.classList.add('wrong');
+    btn.innerHTML = '<div class="opt-circle">' + LABELS[i] + '</div><div class="opt-text">' + o + '</div>';
+    opts.appendChild(btn);
+  });
+
+  document.getElementById('explanationText').innerHTML = '<strong>ব্যাখ্যা:</strong> ' + q.exp;
+  document.getElementById('explanation').classList.add('show');
+  document.getElementById('scoreShow').textContent = 'সবুজ = সঠিক উত্তর';
+}
+</script>
+
+</body>
+</html>
+```
+
