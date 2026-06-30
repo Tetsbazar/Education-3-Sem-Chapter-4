@@ -167,12 +167,14 @@ body{font-family:'Syne',sans-serif;background:#f0faf4;min-height:100vh;color:#1c
 
 <script>
 // ============================================================
-//  ইউজার ডেটাবেস (Same as before)
+//  ইউজার ডেটাবেস এবং স্টোরেজ ম্যানেজমেন্ট
 // ============================================================
 const MAX_ATTEMPTS = 10;
-const TOTAL_SETS = 14; // Updated to 14 sets
+const TOTAL_SETS = 14;
+const STORAGE_KEY = 'testBazarClass12Ch4_v1'; // এই পেজের জন্য আলাদা LocalStorage Key
 
-const userData = [
+// ডিফল্ট ইউজার ডেটা (শুধুমাত্র প্রথমবার লোড হওয়ার জন্য)
+const defaultUsers = [
   {username:"alfa_romeo", password:"ARx7P29m", attempts:{}},
   {username:"santos", password:"St8Qv41L", attempts:{}},
   {username:"falcon", password:"Fc3MZ92k", attempts:{}},
@@ -274,6 +276,26 @@ const userData = [
   {username:"wildfire", password:"Wi1Tk64Rv", attempts:{}},
   {username:"zenith", password:"Ze9Qx28Lp", attempts:{}}
 ];
+
+// ============================================================
+//  LocalStorage থেকে ডেটা লোড/সেভ ফাংশন
+// ============================================================
+function loadUserData() {
+  const storedData = localStorage.getItem(STORAGE_KEY);
+  if (storedData) {
+    return JSON.parse(storedData);
+  } else {
+    saveUserData(defaultUsers);
+    return defaultUsers;
+  }
+}
+
+function saveUserData(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+// গ্লোবাল ভেরিয়েবল ইনিশিয়ালাইজেশন
+let userData = loadUserData();
 
 // ============================================================
 //  সব সেটের ডেটা (Set 1-14 for Chapter 4)
@@ -598,7 +620,7 @@ let cur = 0, score = 0, wrong = 0, answered = false, timerInterval, timeLeft = 1
 let userAnswers = [];
 let isLoggedIn = false;
 let currentUser = null;
-let pendingSetId = null; 
+let pendingSetId = null;
 
 // ============================================================
 //  হাব পেজ বিল্ড
@@ -640,25 +662,16 @@ function goToHub() {
   document.getElementById('hubPage').classList.remove('hidden');
   document.getElementById('timerBox').classList.remove('danger');
   clearInterval(timerInterval);
+  isLoggedIn = false;
+  currentUser = null;
 }
 
 // ============================================================
-//  সেট সিলেক্ট - লগইন চেক
+//  সেট সিলেক্ট - সবসময় লগইন চেক
 // ============================================================
 function selectSet(id) {
   currentSetId = id;
   const set = allSets[id];
-  
-  if (isLoggedIn && currentUser) {
-    const setAttempts = currentUser.attempts[id] || 0;
-    if (setAttempts >= MAX_ATTEMPTS) {
-      alert(`⚠️ আপনি এই অ্যাকাউন্ট দিয়ে ${set.name} এর সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন। আর Test দেওয়া সম্ভব নয়।`);
-      return;
-    }
-    startQuiz(id);
-    return;
-  }
-  
   pendingSetId = id;
   document.getElementById('loginSetName').textContent = `📚 ${set.name} — ${set.topic}`;
   document.getElementById('loginOverlay').classList.add('active');
@@ -686,9 +699,12 @@ function doLoginFromSet() {
     return;
   }
 
+  // Find user in the persistent userData array
   const user = userData.find(u => u.username === username && u.password === password);
+  
   if (user) {
     const setAttempts = user.attempts[currentSetId] || 0;
+    
     if (setAttempts >= MAX_ATTEMPTS) {
       limitInfo.style.display = 'block';
       document.getElementById('limitMsg').textContent = `আপনি এই অ্যাকাউন্ট দিয়ে ${allSets[currentSetId].name} এর সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন। আর Test দেওয়া সম্ভব নয়।`;
@@ -733,13 +749,18 @@ document.addEventListener('DOMContentLoaded', function() {
 function startQuiz(setId) {
   if (!isLoggedIn || !currentUser) return;
   
-  const setAttempts = currentUser.attempts[setId] || 0;
+  // Re-check attempts from the persistent data just to be safe
+  const freshUser = userData.find(u => u.username === currentUser.username);
+  const setAttempts = freshUser.attempts[setId] || 0;
+  
   if (setAttempts >= MAX_ATTEMPTS) {
     alert(`⚠️ আপনি এই সেটের সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন।`);
     return;
   }
   
-  currentUser.attempts[setId] = (currentUser.attempts[setId] || 0) + 1;
+  // Increment attempt and SAVE to LocalStorage immediately
+  freshUser.attempts[setId] = setAttempts + 1;
+  saveUserData(userData); // This ensures the count persists after refresh
   
   cur = 0; score = 0; wrong = 0; answered = false;
   timeLeft = 10 * 60; userAnswers = [];
@@ -824,7 +845,11 @@ function showResult() {
   document.getElementById('rbWrong').textContent = wrong;
   document.getElementById('rbPct').textContent = pct + '%';
   
-  const remaining = MAX_ATTEMPTS - (currentUser.attempts[currentSetId] || 0);
+  // Calculate remaining attempts based on persistent data
+  const freshUser = userData.find(u => u.username === currentUser.username);
+  const currentAttempts = freshUser.attempts[currentSetId] || 0;
+  const remaining = MAX_ATTEMPTS - currentAttempts;
+  
   document.getElementById('attemptInfo').innerHTML = `👤 ${currentUser.username} — ${set.name}: বাকি আছে <strong>${remaining}</strong> বার Test দেওয়ার সুযোগ (সর্বোচ্চ ${MAX_ATTEMPTS} বার)`;
   
   const grades = [
@@ -879,5 +904,4 @@ function loadReview() {
 
 </body>
 </html>
-```
 
